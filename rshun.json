@@ -1,0 +1,582 @@
+[
+	{
+		"cnName": "亚马逊",
+		"enName": "Amazon",
+		"webAddr":	"https://www.amazon.cn/login.jsp",
+		"webAddr1":	"https://www.amazon.con/login.jsp",
+		"userID":	"rshun4shop@outlook.com",
+		"updateTime":	"1",
+		"webIcon":	"https://www.amazon.com/favicon.ico",
+		"Memo":		"中亚和美亚相同"
+	},
+	{
+		"cnName": "V2EX",
+		"enName": "V2ex",
+		"webAddr":	"https://www.v2ex.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.v2ex.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "新浪",
+		"enName": "Sina",
+		"webAddr":	"http://www.sina.com.cn/",
+		"userID":	"rshun2008@sina.cn",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.sina.com.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "FaceBook",
+		"enName": "FaceBook",
+		"webAddr":	"http://www.facebook.com/",
+		"userID":	"rshun2008@hotmail.con",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.facebook.com.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "前程无忧",
+		"enName": "51job",
+		"webAddr":	"http://www.51job.com/",
+		"userID":	"rshun@qq.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.51job.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "智联招聘",
+		"enName": "ZhaoPin",
+		"webAddr":	"http://www.ZhaoPin.com/",
+		"userID":	"rshun@qq.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.ZhaoPin.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "大麦",
+		"enName": "damai",
+		"webAddr":	"https://www.damai.cn/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.damai.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "inoreader",
+		"enName": "inoreader",
+		"webAddr":	"https://www.inoreader.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.inoreader.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "远景论坛",
+		"enName": "pcBETA",
+		"webAddr":	"http://bbs.pcbeta.com/index.php",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.pcBETA.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "威锋网",
+		"enName": "feng",
+		"webAddr":	"https://bbs.feng.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.feng.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "一号店",
+		"enName": "yhd",
+		"webAddr":	"https://www.yhd.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.yhd.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "苏宁易购",
+		"enName": "Sunning",
+		"webAddr":	"https://www.suning.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.suning.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "当当",
+		"enName": "dangdang",
+		"webAddr":	"https://www.dangdang.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.dangdang.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "京东",
+		"enName": "JD",
+		"webAddr":	"https://www.JD.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.JD.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "百度",
+		"enName": "baidu",
+		"webAddr":	"https://www.baidu.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.baidu.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Twitter",
+		"enName": "Twitter",
+		"webAddr":	"https://www.Twitter.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Twitter.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Evernote",
+		"enName": "Evernote",
+		"webAddr":	"https://Evernote.com/",
+		"userID":	"technology@shuncs.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Evernote.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "TVunderground",
+		"enName": "TVunderground",
+		"webAddr":	"https://TVunderground.org.ru/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.TVunderground.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Name",
+		"enName": "Name",
+		"webAddr":	"https://www.name.com/",
+		"userID":	"rshun2008",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Name.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "GoDaddy",
+		"enName": "GoDaddy",
+		"webAddr":	"https://www.GoDaddy.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.GoDaddy.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "NameCheap",
+		"enName": "NameCheap",
+		"webAddr":	"https://www.NameCheap.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.NameCheap.com/favicon.ico",
+		"Memo":		""
+	},	
+	{
+		"cnName": "豆瓣",
+		"enName": "douban",
+		"webAddr":	"https://www.douban.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.douban.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "携程",
+		"enName": "ctrip",
+		"webAddr":	"https://www.ctrip.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.ctrip.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "去哪儿",
+		"enName": "qunar",
+		"webAddr":	"https://www.qunar.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.qunar.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "驴妈妈",
+		"enName": "lvmam",
+		"webAddr":	"https://www.lvmam.com/",
+		"userID":	"阿瞬",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.lvmam.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "美团",
+		"enName": "Meituan",
+		"webAddr":	"https://www.Meituan.com/",
+		"userID":	"rshun2008",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Meituan.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "GitHub",
+		"enName": "GitHub",
+		"webAddr":	"https://www.GitHub.com/",
+		"userID":	"technology@shuncs.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.GitHub.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "网易邮箱",
+		"enName": "NetEase",
+		"webAddr":	"http://mail.netease.com",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.netease.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "领英",
+		"enName": "LinkedIn",
+		"webAddr":	"https://www.LinkedIn.com",
+		"userID":	"rshun2008@hotmail.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.LinkedIn.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Droplr",
+		"enName": "Droplr",
+		"webAddr":	"http://www.Droplr.com",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Droplr.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Paypal",
+		"enName": "Paypal",
+		"webAddr":	"https://www.Paypal.com",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Paypal.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "迅雷",
+		"enName": "xunlei",
+		"webAddr":	"https://www.xunlei.com",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.xunlei.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Dropbox",
+		"enName": "Dropbox",
+		"webAddr":	"https://www.Dropbox.com",
+		"userID":	"technology@shuncs.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Dropbox.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Instagram",
+		"enName": "Instagram",
+		"webAddr":	"https://www.Instagram.com",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.Instagram.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "Pocket",
+		"enName": "Pocket",
+		"webAddr":	"https://getpocket.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://getPocket.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "星巴克中国",
+		"enName": "StarBucks",
+		"webAddr":	"https://www.starbucks.com.cn",
+		"userID":	"rshun2008",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.starbucks.com.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "转运中国",
+		"enName": "transrush",
+		"webAddr":	"http://www.transrush.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://www.transrush.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "经济学人",
+		"enName": "economist",
+		"webAddr":	"https://www.economist.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.economist.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "人行征信",
+		"enName": "pbcc",
+		"webAddr":	"https://ipcrs.pbccrc.org.cn/",
+		"userID":	"rshun2008",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://ipcrs.pbccrc.org.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "东方航空",
+		"enName": "ceair",
+		"webAddr":	"http://http://www.ceair.com/",
+		"userID":	"13584004884",
+		"keyLen":	"0080",
+		"updateTime":	"1",
+		"webIcon":	"http://www.ceair.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "南方航空",
+		"enName": "csair",
+		"webAddr":	"https://www.csair.com/",
+		"userID":	"13584004884",
+		"keyLen":	"0080",
+		"updateTime":	"1",
+		"webIcon":	"http://www.csair.com/favicon.ico",
+		"Memo":		""
+	},	
+	{
+		"cnName": "中国国际航空",
+		"enName": "airchina",
+		"webAddr":	"http://http://www.airchina.com.cn/",
+		"userID":	"rshun",
+		"keyLen":	"0080",
+		"updateTime":	"1",
+		"webIcon":	"http://www.airchina.com.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "凤凰知音",
+		"enName": "airchina",
+		"webAddr":	"http://ffp.airchina.com.cn/app/login/member",
+		"userID":	"13584004884",
+		"keyLen":	"0060",
+		"updateTime":	"1",
+		"webIcon":	"http://www.airchina.com.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "亚洲万里通",
+		"enName": "asiamiles",
+		"webAddr":	"https://www.asiamiles.com/",
+		"userID":	"1734348354",
+		"keyLen":	"6220",
+		"updateTime":	"1",
+		"webIcon":	"https://www.asiamiles.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "英国航空",
+		"enName": "britishairways",
+		"webAddr":	"https://www.britishairways.com/",
+		"userID":	"23451354",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.britishairways.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "天巡境外",
+		"enName": "skyscanner",
+		"webAddr":	"https://www.skyscanner.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.skyscanner.com/favicon.ico",
+		"Memo":		""
+	},	
+	{
+		"cnName": "天巡中国",
+		"enName": "tianxun",
+		"webAddr":	"https://www.tianxun.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.tianxun.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "git邮箱",
+		"enName": "git",
+		"webAddr":	"http://mail.git.com.cn",
+		"userID":	"chensheng",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://mail.git.com.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "192.168.0.1",
+		"enName": "192.168.0.1",
+		"webAddr":	"http://192.168.0.1/",
+		"userID":	"root",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"",
+		"Memo":		""
+	},
+	{
+		"cnName": "192.168.1.2",
+		"enName": "192.168.1.2",
+		"webAddr":	"http://192.168.1.2/",
+		"userID":	"admin",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"",
+		"Memo":		""
+	},
+	{
+		"cnName": "linode",
+		"enName": "linode",
+		"webAddr":	"https://www.linode.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://www.linode.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "国家电网",
+		"enName": "95598",
+		"webAddr":	"https://www.95598.cn/",
+		"userID":	"rshun2008",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://www.95598.cn/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "爱彼迎",
+		"enName": "airbnb",
+		"webAddr":	"https://www.airbnb.com/",
+		"userID":	"13813809183",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://www.airbnb.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "缤客",
+		"enName": "booking",
+		"webAddr":	"https://www.booking.com/",
+		"userID":	"rshun4shop@outlook.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://www.booking.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "cloudflare",
+		"enName": "cloudflare",
+		"webAddr":	"https://www.cloudflare.com/",
+		"userID":	"technology@shuncs.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"http://www.cloudflare.com/favicon.ico",
+		"Memo":		""
+	},	
+	{
+		"cnName": "顺丰速运",
+		"enName": "SFbuy",
+		"webAddr":	"https://www.SFbuy.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.SFbuy.com/favicon.ico",
+		"Memo":		""
+	},
+	{
+		"cnName": "IFTTT",
+		"enName": "ifttt",
+		"webAddr":	"https://www.ifttt.com/",
+		"userID":	"rshun",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.ifttt.com/favicon.ico",
+		"Memo":		""
+	},	
+	{
+		"cnName": "飞客",
+		"enName": "flyertea",
+		"webAddr":	"https://www.flyertea.com/",
+		"userID":	"stevechen@netease.com",
+		"keyLen":	"6211",
+		"updateTime":	"1",
+		"webIcon":	"https://www.flyertea.com/favicon.ico",
+		"Memo":		""
+	}	
+]
