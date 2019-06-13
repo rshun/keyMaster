@@ -25,6 +25,8 @@ char* webAddr;
 char* userID;
 char* keyLen;
 char* updateTime;
+char* keyType;
+char* allowSpec;
 char* webIcon;	
 }keyinfo,*keyinfoPtr;
 

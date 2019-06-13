@@ -98,6 +98,30 @@ char* ptr = dst;
     return ptr;
 }
 
+static char* _specStr(char* s,const char* specstr)
+{
+int i=0,j=0;
+char* p = s;
+
+while(*(s+i) != '\0')
+{
+	if ((isdigit(*s)) || (isalpha(*s)) || (isupper(*s)))
+	{
+		i++;
+		continue;
+	}
+
+printf("[%c]\n",*(s+i));
+	if (strchr(specstr,*(s+i)) == NULL)
+	{
+		j = i % (utility_strlen(specstr));
+		*(s+i) = specstr[j];
+	}
+}
+
+return p;
+}
+
 /*若首位非字母,则将字符串第一个字母和首位互换*/
 static char* _lowstrpos(char* s)
 {
@@ -123,10 +147,11 @@ return p;
 /*
 参数1：待加密字符串
 参数2：密码长度
-参数3：加密后的字符串
-参数4：参数3的长度
+参数3：是否有指定的特殊字符串 为空不指定
+参数4：加密后的字符串
+参数5：参数3的长度
 */
-char* codeutil_password(const char* s,const char* pwdlen,char* code,size_t codelen)
+char* codeutil_password(const char* s,const char* pwdlen,const char* spec,char* code,size_t codelen)
 {
 char alpha_str[SHA512_LEN];
 char digit_str[SHA512_LEN];
@@ -172,6 +197,9 @@ _convert(digit_str,alpha_str,code,upperLen,passwordLen,3);
 
 if (lowerLen > 0)
 	_lowstrpos(code);
+
+if (utility_strlen(spec) > 0)
+	_specStr(code,spec);
 
 return p;
 }

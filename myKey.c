@@ -2,7 +2,7 @@
 #include "cJSON.h"
 #include "codeutil.h"
 
-const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","webIcon"};
+const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","keyType","allowSpec","webIcon"};
 const char HTTP_HEAD[]="http://";
 const char HTTPS_HEAD[]="https://";
 const char WWW_ADDR[]="www.";
@@ -252,6 +252,12 @@ for(i=0;i<num;i++)
 				_initTimes(&ptrJson->updateTime);
 				break;
 			case 6:
+				_put2Value(cJSON_GetStringValue(value),&ptrJson->keyType);
+				break;
+			case 7:
+				_put2Value(cJSON_GetStringValue(value),&ptrJson->allowSpec);
+				break;
+			case 8:
 				_put2Value(cJSON_GetStringValue(value),&ptrJson->webIcon);				
 				break;
 		}
@@ -269,9 +275,12 @@ for(i=0;i<num;i++)
 
 		_RawAddr(ptrJson->webAddr,addr,addrlen+1);
 
-		sprintf(code,"%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime);
-		//printf("code=[%s]\n",code);
-		codeutil_password(code,ptrJson->keyLen,password,len);
+		if (ptrJson->keyType == NULL)
+			sprintf(code,"%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime);
+		else	
+			sprintf(code,"%s%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime,ptrJson->keyType);
+		printf("code=[%s],%s\n",code,ptrJson->allowSpec);
+		codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
 		printf("[%s]\t[%s]\tuser=[%s]\tpassword=[%s]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
 	}
 /*
