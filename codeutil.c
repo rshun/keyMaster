@@ -98,25 +98,25 @@ char* ptr = dst;
     return ptr;
 }
 
+/* 将密码中的特殊字符串改成指定的特殊字符串*/
 static char* _specStr(char* s,const char* specstr)
 {
-int i=0,j=0;
+int i=0;
 char* p = s;
 
 while(*(s+i) != '\0')
 {
-	if ((isdigit(*s)) || (isalpha(*s)) || (isupper(*s)))
+	if (isdigit(*(s+i)) || isalpha(*(s+i)) || isupper(*(s+i)))
 	{
 		i++;
 		continue;
 	}
 
-printf("[%c]\n",*(s+i));
 	if (strchr(specstr,*(s+i)) == NULL)
 	{
-		j = i % (utility_strlen(specstr));
-		*(s+i) = specstr[j];
+		*(s+i) = specstr[i % (utility_strlen(specstr))];
 	}
+	i++;
 }
 
 return p;
@@ -203,4 +203,3 @@ if (utility_strlen(spec) > 0)
 
 return p;
 }
-

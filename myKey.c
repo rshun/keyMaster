@@ -93,6 +93,8 @@ _free((void**)&value->webAddr);
 _free((void**)&value->userID);
 _free((void**)&value->keyLen);
 _free((void**)&value->updateTime);
+_free((void**)&value->keyType);
+_free((void**)&value->allowSpec);
 }
 
 static char* _put2Value(char* _s,char** _d)
@@ -283,11 +285,7 @@ for(i=0;i<num;i++)
 		codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
 		printf("[%s]\t[%s]\tuser=[%s]\tpassword=[%s]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
 	}
-/*
-	_free((void**)code);
-	_free((void**)password);
-	_free((void**)addr);
-*/
+
 	deallocate(ptrJson);
 }
 _free((void**)ptrJson);
