@@ -68,34 +68,62 @@ int i=0;
 static char* _convert(const char* p,const char* q,char* dst,uInt len,uInt pwdLen,int flag)
 {
 int i,j;
-char* ptr = dst;
+char *ptr = dst;
 
+/* 如果全是数字字符串或大写字符串,则循环更改 */
+if (len == pwdLen)
+{
+	for(i = 0; i < len; p++,q++,i++)
+	{
+		switch(flag)
+		{
+			case 1:	/* 特殊字符 */
+				*(dst+i) = utility_num2spec(utility_gdigit(p));
+				break;
+			case 2: /* 数字 */
+				if (i % 2 != 0)
+					*(dst+i) = *(p+((utility_sumchar(p)*utility_gdigit(q)) %utility_strlen(p)));
+				else
+					*(dst+i) = *(p+((utility_gdigit(q)-utility_sumchar(p)) %utility_strlen(p)));
+				break;
+			case 3: /* 大写字符 */
+				if (i % 2 == 0)
+					*(dst+i) = toupper(utility_galpha(utility_sumchar(p)));
+				else
+					*(dst+i) = toupper(*(dst+i));
+				break;		
+		}
+	}
+}
+else	/* 随机更改 */
+{
     for(i = 0; i < len; p++,q++)
     {
         if ((utility_strlen(p) == 0) || (utility_strlen(q) == 0))
             break;
 
         j = (utility_sumchar(p) + utility_gdigit(q)) % pwdLen ;
-
+		
         if (islower(*(dst+j)) != 0)
         {
             i++;
             switch(flag)
             {
-                case 1:
-                    *(dst+j) = utility_trandigit(*(p+j));
+                case 1:	/* 特殊字符 */
+                    *(dst+j) = utility_char2spec(*(p+j));
                     break;
-                case 2:
+                case 2: /* 数字 */
                     *(dst+j) = *(p+j);
                     break;
-                case 3:
+                case 3: /* 大写字符 */
                     *(dst+j) = toupper(*(dst+j));
                     break;
             }
         }
     }
+}
 
-    return ptr;
+return ptr;
 }
 
 /* 将密码中的特殊字符串改成指定的特殊字符串*/
@@ -167,10 +195,10 @@ if ((utility_strlen(s) == 0) || (utility_strlen(s) >= SHA512_LEN))
 
 if (utility_strlen(pwdlen) == 4) 
 {
-	lowerLen=utility_chtonum(pwdlen[0]);
-	upperLen=utility_chtonum(pwdlen[1]);
-	digitLen=utility_chtonum(pwdlen[2]);
-	spechLen=utility_chtonum(pwdlen[3]);
+	lowerLen=utility_ch2num(pwdlen[0]);
+	upperLen=utility_ch2num(pwdlen[1]);
+	digitLen=utility_ch2num(pwdlen[2]);
+	spechLen=utility_ch2num(pwdlen[3]);
 }
 else
 {

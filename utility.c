@@ -40,8 +40,31 @@ for (i=0;i<SHA512_DIGEST_SIZE;i++)
 return p;	
 }
 
+/* 将数字转换成特殊字符 */
+char utility_num2spec(uInt s)
+{
+char v='#';
+
+    switch(s%10)
+    {
+        case 1:v='(';break;
+        case 2:v=')';break;
+        case 3:v='#';break;
+        case 4:v='%';break;
+        case 5:v='!';break;
+        case 6:v='+';break;
+        case 7:v='-';break;
+        case 8:v='$';break;
+        case 9:v=':';break;
+        case 0:v=';';break;
+        default:break;
+    }
+
+    return v;
+}
+
 /* 将字符转成数字 */
-uInt utility_chtonum(char s)
+uInt utility_ch2num(char s)
 {
 uInt v=0;
 
@@ -63,7 +86,7 @@ uInt v=0;
 }
 
 /* 将字符转成特殊字符 */
-char utility_trandigit(char s)
+char utility_char2spec(char s)
 {
 char v='0';
 
@@ -114,7 +137,7 @@ if (utility_strlen(s) == 0)
     return v;
 
     while (*s != '\0')
-        v += utility_chtonum(*s++);
+        v += utility_ch2num(*s++);
 
     return v;
 }

@@ -281,7 +281,7 @@ for(i=0;i<num;i++)
 			sprintf(code,"%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime);
 		else	
 			sprintf(code,"%s%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime,ptrJson->keyType);
-		printf("code=[%s],%s\n",code,ptrJson->allowSpec);
+//		printf("code=[%s],%s\n",code,ptrJson->allowSpec);
 		codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
 		printf("[%s]\t[%s]\tuser=[%s]\tpassword=[%s]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
 	}
