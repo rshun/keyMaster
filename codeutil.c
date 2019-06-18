@@ -8,6 +8,29 @@ static const uInt UPPERLEN_DEFAULT = 2;
 static const uInt DIGITLEN_DEFAULT = 1;
 static const uInt SPECHLEN_DEFAULT = 1;
 
+static char _procdigit(char r,const char* result)
+{
+int i,count=1;
+size_t len = utility_strlen(result);
+
+if ( len < 4 ) return r;
+
+while(1)
+{
+	for(i=0,count=1;i<len;i++)
+	{
+		if (r == result[i]) count++;
+	}
+
+	if ( ((float)count / len * 100 - 30.00) < 0.004)
+		break;
+
+	r = 48 + (r+1)%10;
+}
+
+return r;
+}
+
 static void _splitstring(const char* s,char* digit,char* alphabet)
 {
     for(;*s!='\0';s++)
@@ -69,6 +92,7 @@ static char* _convert(const char* p,const char* q,char* dst,uInt len,uInt pwdLen
 {
 int i,j;
 char *ptr = dst;
+char c;
 
 /* 如果全是数字字符串或大写字符串,则循环更改 */
 if (len == pwdLen)
@@ -82,9 +106,11 @@ if (len == pwdLen)
 				break;
 			case 2: /* 数字 */
 				if (i % 2 != 0)
-					*(dst+i) = *(p+((utility_sumchar(p)*utility_gdigit(q)) %utility_strlen(p)));
+					c = *(p+((utility_sumchar(p)*utility_gdigit(q)) %utility_strlen(p)));
 				else
-					*(dst+i) = *(p+((utility_gdigit(q)-utility_sumchar(p)) %utility_strlen(p)));
+					c = *(p+((utility_gdigit(q)-utility_sumchar(p)) %utility_strlen(p)));
+					c = _procdigit(c,dst);
+					*(dst+i) = c;
 				break;
 			case 3: /* 大写字符 */
 				if (i % 2 == 0)
