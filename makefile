@@ -24,5 +24,6 @@ fpr:
 .PHONY : clean
 clean:
 	$(RM) $(MYLIBA)
+	$(RM) $(MYLIBSO)
 	$(RM) $(PUBOBJS) $(KEYOBJS)
 	$(RM) $(LIBNAME).fpr

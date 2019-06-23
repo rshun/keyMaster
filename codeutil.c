@@ -25,10 +25,55 @@ while(1)
 	if ( ((float)count / len * 100 - 30.00) < 0.004)
 		break;
 
-	r = 48 + (r+1)%10;
+	r = '0' + (r+1)%10;
 }
 
 return r;
+}
+
+/* 检查数字字符串的重复率,超过20%就要替换掉 */
+static char* _crReptStr(char *s)
+{
+int i,count,pos,newvalue=0;
+int digit[10]={0};
+double percentage;
+
+if (utility_strlen(s) < 5)
+	return s;
+
+for(i=0;i<utility_strlen(s);i++)
+{
+	switch(s[i])
+	{
+		case '0':digit[0]++;break;
+		case '1':digit[1]++;break;
+		case '2':digit[2]++;break;
+		case '3':digit[3]++;break;
+		case '4':digit[4]++;break;
+		case '5':digit[5]++;break;
+		case '6':digit[6]++;break;
+		case '7':digit[7]++;break;
+		case '8':digit[8]++;break;
+		case '9':digit[9]++;break;
+	}
+}
+
+for(i=0,count=0;i<sizeof(digit)/sizeof(digit[0]);i++)
+{
+	if (digit[i]>1) {count++;pos=i;}
+	if (digit[i] == 0) newvalue = i;
+}
+
+percentage = (float)count / utility_strlen(s) * 100.0;
+if (percentage - 12.00 > 0.004)
+{
+	for(i=0;i<utility_strlen(s);i++)
+	{
+		if (s[i] == pos+'0') {s[i] = newvalue+'0';break;}
+	}
+}
+
+return s;
 }
 
 static void _splitstring(const char* s,char* digit,char* alphabet)
@@ -74,7 +119,8 @@ _splitstring(temp2,digit,alpha);
 static char* _basecode(const char* p,const char* q,char* new,uInt len)
 {
 int i=0;
-	
+char *ptr = new;
+
 	for(i=0;i<len;i++)
 	{
 		*(new+i) = utility_galpha(utility_sumchar(p)+utility_gdigit(q));
@@ -84,7 +130,7 @@ int i=0;
 			q++;
 	}
 	
-	return new;
+	return ptr;
 }
 
 /* 将密码串按要求加工*/
@@ -109,6 +155,7 @@ if (len == pwdLen)
 					c = *(p+((utility_sumchar(p)*utility_gdigit(q)) %utility_strlen(p)));
 				else
 					c = *(p+((utility_gdigit(q)-utility_sumchar(p)) %utility_strlen(p)));
+
 					c = _procdigit(c,dst);
 					*(dst+i) = c;
 				break;
@@ -119,6 +166,20 @@ if (len == pwdLen)
 					*(dst+i) = toupper(*(dst+i));
 				break;		
 		}
+	}
+
+/* 如果全是同一类型的字符串,检查重复率*/
+	switch(flag)
+	{
+		case 1:
+			break;
+		case 2:
+			_crReptStr(dst);_crReptStr(dst);_crReptStr(dst);
+			break;
+		case 3:
+			break;
+		default:
+			break;
 	}
 }
 else	/* 随机更改 */
