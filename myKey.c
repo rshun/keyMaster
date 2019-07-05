@@ -120,9 +120,15 @@ static uInt _getKeyLen(const char* keylen)
 {
 uInt r = 0;
 uInt len = _strlen(keylen);
-int i;
+int i=0;
 
-for(i=0;i<len;i++)
+if (len == 4)
+{
+	r=(keylen[0]-48)*10;
+	i=1;
+}
+
+for(;i<len;i++)
 {
 	switch(keylen[i])
 	{

@@ -186,3 +186,23 @@ s2[s_len]=0;
 return s2;
 }
 
+char* utility_strrev(char* s1)
+{
+size_t s_len = utility_strlen(s1);
+int i;
+char *ptr = s1;
+char c;
+
+if (s_len <= 2)
+	return ptr;
+
+for(i=0;i<s_len / 2;i++)
+{
+	c = s1[i];
+	s1[i] = s1[s_len - 1 -i];
+	s1[s_len-1-i] = c;
+}
+
+return ptr;
+}
+
