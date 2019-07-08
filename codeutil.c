@@ -47,6 +47,7 @@ int i;
 		info->spechlen = 1;
 	}
 
+
 	if (info->alphalen+info->digitlen+info->spechlen < 6)
 	{
 		info->alphalen = 8;
