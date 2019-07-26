@@ -14,9 +14,16 @@ static const uInt SHA512_LEN=SHA512_DIGEST_SIZE*2+1;
 static const char ALPHABET[]="abcdefghijklmnopqrstuvwxyz";
 static const char DIGIT[]="0123456789";
 
-static int _splitKeyLen(const char* s,keyinfoPtr info)
+/* 将密码长度分隔到指定字符串 
+长度为3 第1位是字母 第2位是数字 第3位是特殊字符 
+长度为4 前2位是字母 第3位是数字 第4位是特殊字符
+除此之外 8位字母 1位数字 1位特殊字符
+密码长度必须大于6,且必须包含字母或数字
+大写字母占大于20%
+*/
+static size_t _splitKeyLen(const char* s,keyinfoPtr info)
 {
-uInt total;
+size_t total;
 int i;
 
 	switch(utility_strlen(s))
@@ -73,6 +80,7 @@ if (info->alphalen > 0)
 return total;
 }
 
+/* 去掉重复的字符串 */
 static char _rmDupStr(char* str,uInt slen)
 {
 size_t len = utility_strlen(ALPHABET)+utility_strlen(str);
@@ -84,9 +92,14 @@ memset(newstr,0x0,sizeof(newstr));
 memset(value,0x0,sizeof(value));
 
 snprintf(newstr,sizeof(newstr),"%s%s",ALPHABET,str);
+/* 统计每个字母的次数 */
 for(i=0;i<utility_strlen(newstr);i++)
-	result[newstr[i]-'a']++;
+{
+	if (isalpha(newstr[i]))
+		result[newstr[i]-'a']++;
+}
 
+/* 去掉重复字母 */
 for(i=0,j=0;i<utility_strlen(ALPHABET);i++)
 {
 	if (result[i] == 1) 
@@ -99,6 +112,7 @@ for(i=0;i<utility_strlen(str);i++)
 return value[v % utility_strlen(value)];
 }
 
+/* 去掉重复的数字  */
 static char _rmDupDigit(char* str,uInt slen)
 {
 size_t len = utility_strlen(DIGIT)+utility_strlen(str);
@@ -110,9 +124,14 @@ memset(newstr,0x0,sizeof(newstr));
 memset(value,0x0,sizeof(value));
 
 snprintf(newstr,sizeof(newstr),"%s%s",DIGIT,str);
+/* 统计每个数字的次数 */
 for(i=0;i<utility_strlen(newstr);i++)
-	result[newstr[i]-'0']++;
+{
+	if (isdigit(newstr[i]))
+		result[newstr[i]-'0']++;
+}
 
+/* 去掉重复数字 */
 for(i=0,j=0;i<utility_strlen(DIGIT);i++)
 {
 	if (result[i] == 1) 
@@ -176,6 +195,7 @@ char c;
 		c =  utility_galpha(utility_sumchar(p)+utility_gdigit(q));
 		if (len < 26)
 		{
+			/*去掉重复的数字或字符串*/
 			if (strchr(new,c) != NULL)
 				c = _rmDupStr(new,len);
 		}
@@ -301,7 +321,7 @@ char* codeutil_password(const char* s,const char* pwdlen,const char* spec,char* 
 char alpha_str[SHA512_LEN];
 char digit_str[SHA512_LEN];
 char* p = code;
-uInt passwordLen;
+size_t passwordLen;
 keyinfo myKeyInfo;
 
 if ((utility_strlen(s) == 0) || (utility_strlen(s) >= SHA512_LEN))
