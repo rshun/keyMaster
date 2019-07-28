@@ -83,30 +83,27 @@ return total;
 /* 去掉重复的字符串 */
 static char _rmDupStr(char* str,uInt slen)
 {
-size_t len = utility_strlen(ALPHABET)+utility_strlen(str);
-char newstr[len+1],value[len+1];
+size_t len = utility_strlen(str);
+char value[utility_strlen(ALPHABET)+1];
 int result[26]={0};
 int i,j,v=1;
 
-memset(newstr,0x0,sizeof(newstr));
 memset(value,0x0,sizeof(value));
-
-snprintf(newstr,sizeof(newstr),"%s%s",ALPHABET,str);
-/* 统计每个字母的次数 */
-for(i=0;i<utility_strlen(newstr);i++)
+/* 统计每个字母的出现次数 */
+for(i=0;i<len;i++)
 {
-	if (isalpha(newstr[i]))
-		result[newstr[i]-'a']++;
+	if (isalpha(str[i]))
+		result[str[i]-'a']++;
 }
 
 /* 去掉重复字母 */
 for(i=0,j=0;i<utility_strlen(ALPHABET);i++)
 {
-	if (result[i] == 1) 
+	if (result[i] == 0) 
 		value[j++] = ALPHABET[i];
 }
 
-for(i=0;i<utility_strlen(str);i++)
+for(i=0;i<len;i++)
 	v += (str[i] * (i+slen));
 
 return value[v % utility_strlen(value)];
@@ -115,30 +112,28 @@ return value[v % utility_strlen(value)];
 /* 去掉重复的数字  */
 static char _rmDupDigit(char* str,uInt slen)
 {
-size_t len = utility_strlen(DIGIT)+utility_strlen(str);
-char newstr[len+1],value[len+1];
+size_t len = utility_strlen(str);
+char value[utility_strlen(DIGIT)+1];
 int result[10]={0};
 int i,j,v=1;
 
-memset(newstr,0x0,sizeof(newstr));
 memset(value,0x0,sizeof(value));
 
-snprintf(newstr,sizeof(newstr),"%s%s",DIGIT,str);
 /* 统计每个数字的次数 */
-for(i=0;i<utility_strlen(newstr);i++)
+for(i=0;i<len;i++)
 {
-	if (isdigit(newstr[i]))
-		result[newstr[i]-'0']++;
+	if (isdigit(str[i]))
+		result[str[i]-'0']++;
 }
 
 /* 去掉重复数字 */
 for(i=0,j=0;i<utility_strlen(DIGIT);i++)
 {
-	if (result[i] == 1) 
+	if (result[i] == 0) 
 		value[j++] = DIGIT[i];
 }
 
-for(i=0;i<utility_strlen(str);i++)
+for(i=0;i<len;i++)
 	v += (str[i] * (i+slen));
 
 return value[v % utility_strlen(value)];
@@ -330,7 +325,7 @@ if ((utility_strlen(s) == 0) || (utility_strlen(s) >= SHA512_LEN))
 memset(&myKeyInfo,0x0,sizeof(myKeyInfo));
 passwordLen=_splitKeyLen(pwdlen,&myKeyInfo);
 
-if (codelen < passwordLen)
+if (codelen <= passwordLen)
 	return NULL;
 
 memset(alpha_str,0x0,sizeof(alpha_str));
