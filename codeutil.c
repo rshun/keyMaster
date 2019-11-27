@@ -331,6 +331,13 @@ if (codelen <= passwordLen)
 memset(alpha_str,0x0,sizeof(alpha_str));
 memset(digit_str,0x0,sizeof(digit_str));
 
+/*
+1、生成最原始的密钥串
+2、按照密码的长度做切割
+3、依照密码的类型对密码串转换
+4、判断首字母是否为字母
+5、判断是否指定特殊串
+*/
 _rawcode(s,alpha_str,digit_str);
 _basecode(digit_str,alpha_str,code,passwordLen);
 
