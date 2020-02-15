@@ -1,0 +1,43 @@
+ifdef BITS32
+	BITS=32
+else
+	BITS=64
+endif
+
+ifdef DEBUG
+	MODE = debug
+	MODEFLAG = -g -D_DEBUG
+else
+	MODE = release
+	MODEFLAG = -O3 -DNDEBUG
+endif
+
+RM=@rm -rf
+CP=@cp
+MV=@mv
+
+EXECOMPILE=$(MODEFLAG) 
+
+TOPOBJDIR=$(HOME)/obj/
+TOPLIBDIR=$(HOME)/lib/
+TOPINCDIR=$(HOME)/incl/
+TOPBINDIR=$(HOME)/bin/
+OBJDIR=../obj/
+LIBDIR=../lib/
+
+LIBA=$(TOPLIBDIR)lib$(LIBNAME).a
+LIBSO=$(LIBDIR)lib$(LIBNAME).so
+
+TOPLIBA=$(TOPLIBDIR)lib$(LIBNAME).a
+TOPLIBSO=$(TOPLIBDIR)lib$(LIBNAME).so
+
+OSNAME = $(shell uname)
+ifeq ($(OSNAME),Linux)
+	LD=ar -ru
+	SO=gcc -shared -m$(BITS) -o
+	CC=gcc
+	EXE=gcc -o
+	EXECOMPILE+= -m$(BITS) -c -DLINUX -Wall
+.c.o:
+	$(CC) $(EXECOMPILE) -fPIC -I $(TOPINCDIR) -o $(OBJDIR)$*.o $*.c
+endif
