@@ -206,3 +206,31 @@ for(i=0;i<s_len / 2;i++)
 return ptr;
 }
 
+/* 获取文件大小 */
+off_t utility_getfilesize(const char* filename)
+{
+struct stat _buf;
+
+    if (stat(filename,&_buf) < 0)
+    {
+        printf("stat [%s] is error,[%s]\n",filename,strerror(errno));
+        return 0;
+    }
+
+    return _buf.st_size;
+}
+
+/* 判断是否是数字字符串 */
+int utility_isdigitstr(const char* str)
+{
+if (!utility_strlen(str))
+  return -1;
+
+while (*str != '\0')
+{
+  if (!isdigit(*str++))
+    return -1;
+}
+
+return 0;
+}

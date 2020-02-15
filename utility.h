@@ -30,4 +30,6 @@ uInt utility_gdigit(const char* );
 uInt utility_sumchar(const char* );
 char* utility_tolower(char* );
 char* utility_toupper(char* );
+off_t utility_getfilesize(const char* );
+int utility_isdigitstr(const char* );
 #endif

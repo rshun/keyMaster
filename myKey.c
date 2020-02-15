@@ -1,6 +1,7 @@
 #include "myKey.h"
 #include "cJSON.h"
 #include "codeutil.h"
+#include "utility.h"
 
 const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","keyType","allowSpec","webIcon"};
 const char HTTP_HEAD[]="http://";
@@ -8,36 +9,18 @@ const char HTTPS_HEAD[]="https://";
 const char WWW_ADDR[]="www.";
 const char BBS_ADDR[]="bbs.";
 
-static size_t _strlen(const char* _s)
-{
-	if (_s == NULL)
-		return 0;
-	else
-		return strlen(_s);
-}
-
-static char* tolowerstr(char* p_str)
-{
-char* _s = p_str;
-
-if (p_str)
-{
-  for(;*p_str != '\0';p_str++)
-    *p_str = tolower(*p_str);
-}
-
-return _s;
-}
-
-/*只保留域名地址*/
+/*	只保留域名地址,去掉二级域名
+参数: https://www.google.com/
+返回: google.com
+*/
 const char* _RawAddr(const char* s,char* r,size_t rlen)
 {
 char *p = NULL;
-size_t http_len = _strlen(HTTP_HEAD);
-size_t https_len = _strlen(HTTPS_HEAD);
-size_t www_len= _strlen(WWW_ADDR);
-size_t bbs_len = _strlen(BBS_ADDR);
-size_t len = _strlen(s);
+size_t http_len = utility_strlen(HTTP_HEAD);
+size_t https_len = utility_strlen(HTTPS_HEAD);
+size_t www_len= utility_strlen(WWW_ADDR);
+size_t bbs_len = utility_strlen(BBS_ADDR);
+size_t len = utility_strlen(s);
 size_t flag;
 
 if (( p =strstr(s,HTTP_HEAD)) != NULL)
@@ -71,20 +54,6 @@ static void _free(void** p_ptr)
   }
 }
 
-/* 获取文件大小 */
-static off_t _getFileSize(const char* filename)
-{
-struct stat _buf;
-
-    if (stat(filename,&_buf) < 0)
-    {
-        printf("stat [%s] is error,[%s]\n",filename,strerror(errno));
-        return 0;
-    }
-
-    return _buf.st_size;
-}
-
 static void deallocate(keyinfoPtr value)
 {
 _free((void**)&value->cnName);
@@ -99,7 +68,7 @@ _free((void**)&value->allowSpec);
 
 static char* _put2Value(char* _s,char** _d)
 {
-size_t len = _strlen(_s)+1;
+size_t len = utility_strlen(_s)+1;
 
 if (len == 1)
 	return NULL;
@@ -119,7 +88,7 @@ return *_d;
 static uInt _getKeyLen(const char* keylen)
 {
 uInt r = 0;
-uInt len = _strlen(keylen);
+uInt len = utility_strlen(keylen);
 int i=0;
 
 if (len == 4)
@@ -152,7 +121,7 @@ return r;
 static char* _initTimes(char** value)
 {
 
-if(_strlen(*value) == 0)
+if(utility_strlen(*value) == 0)
 {
 	if ((*value = (char*)malloc(2)) == NULL)
 	{
@@ -185,9 +154,9 @@ static int _initValue(char** s,size_t len)
 /*校验密码长度,如果为空赋默认值*/
 static char* _initKeylen(char** value)
 {
-uInt len = _strlen(DEFAULT_PWDLEN) + 1;
+uInt len = utility_strlen(DEFAULT_PWDLEN) + 1;
 
-if(_strlen(*value) == 0)
+if(utility_strlen(*value) == 0)
 {
 	if ((*value = (char*)malloc(len)) == NULL)
 	{
@@ -198,7 +167,14 @@ if(_strlen(*value) == 0)
 	memset(*value,0x0,len);
 	strncpy(*value,DEFAULT_PWDLEN,len - 1);
 }
-
+else
+{
+	if (utility_isdigitstr(*value) < 0)
+	{
+		memset(*value,0x0,len);
+		strncpy(*value,DEFAULT_PWDLEN,len - 1);
+	}
+}
 return *value;
 }
 
@@ -246,7 +222,7 @@ for(i=0;i<num;i++)
 				break;
 			case 2:
 				_put2Value(cJSON_GetStringValue(value),&ptrJson->webAddr);
-				tolowerstr(ptrJson->webAddr);
+				utility_tolower(ptrJson->webAddr);
 				break;
 			case 3:
 				_put2Value(cJSON_GetStringValue(value),&ptrJson->userID);
@@ -271,18 +247,21 @@ for(i=0;i<num;i++)
 		}
 	}
 	
-	addrlen = _strlen(ptrJson->webAddr);
-	if ((_strlen(ptrJson->userID) > 0) && (addrlen > 0))
+	addrlen = utility_strlen(ptrJson->webAddr);
+	if ((utility_strlen(ptrJson->userID) > 0) && (addrlen > 0))
 	{
 		len = _getKeyLen(ptrJson->keyLen)+1;
 		_initValue(&password,len);
 		
-		_initValue(&code,addrlen+_strlen(ptrJson->userID)+_strlen(ptrJson->updateTime)+_strlen(primary) + 1);
+		_initValue(&code,addrlen+utility_strlen(ptrJson->userID)+utility_strlen(ptrJson->updateTime)+utility_strlen(primary) + 1);
 		
 		_initValue(&addr,addrlen+1);
 
 		_RawAddr(ptrJson->webAddr,addr,addrlen+1);
-
+/* 如果密钥类型为空,
+原始加密串组成:地址+主密钥+用户名+更新次数
+原始加密串组成:地址+主密钥+用户名+更新次数+密钥类型
+*/
 		if (ptrJson->keyType == NULL)
 			sprintf(code,"%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime);
 		else	
@@ -290,6 +269,10 @@ for(i=0;i<num;i++)
 
 		codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
 		printf("[%s]\t[%s]\tuser=[%s]\tpassword=[%s]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
+		
+		_free((void*)&password);
+		_free((void*)&code);
+		_free((void*)&addr);
 	}
 
 	deallocate(ptrJson);
@@ -316,7 +299,7 @@ if (argc < 3)
 memset(filename,0x0,sizeof(filename));
 snprintf(filename,sizeof(filename),"%s.json",argv[1]);
 
-if ((fileLen = _getFileSize(filename)) == 0)
+if ((fileLen = utility_getfilesize(filename)) == 0)
 	exit(-1);
 
 if ((filebuf = (char*)malloc(fileLen+1)) == NULL)
