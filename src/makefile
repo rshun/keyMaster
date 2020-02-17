@@ -1,5 +1,7 @@
 include ../etc/make.setup
 USERINCL=
+OBJDIR=../obj/
+LIBDIR=../lib/
 PUBOBJS = codeutil.o utility.o sha2.o
 KEYOBJS = cJSON.o myKey.o
 MYLIBSO = $(LIBDIR)libmykey$(BITS).so
