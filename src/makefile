@@ -35,3 +35,4 @@ clean:
 	$(RM) $(addprefix $(OBJDIR),$(PUBOBJS))
 	$(RM) $(addprefix $(OBJDIR),$(KEYOBJS))
 	$(RM) *.fpr
+	$(RM) myKey
