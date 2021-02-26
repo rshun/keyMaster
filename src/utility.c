@@ -122,10 +122,10 @@ uInt v=0;
 if (utility_strlen(s) == 0)
     return v;
 
-    while (*s != '\0')
-        v += *s++;
+while (*s != '\0')
+    v += *s++;
 
-    return v;
+return v;
 }
 
 /* 将字符串中的各数字相加 */
@@ -136,10 +136,10 @@ uInt v = 0;
 if (utility_strlen(s) == 0)
     return v;
 
-    while (*s != '\0')
-        v += utility_ch2num(*s++);
+while (*s != '\0')
+    v += utility_ch2num(*s++);
 
-    return v;
+return v;
 }
 
 char* utility_tolower(char* p_str)
