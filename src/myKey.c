@@ -45,76 +45,16 @@ do
 return r;
 }
 
-static void _free(void** p_ptr)
-{
-  if ((p_ptr != NULL) && (*p_ptr != NULL))
-  {
-    free(*p_ptr);
-    *p_ptr = NULL;
-  }
-}
-
 static void deallocate(keyinfoPtr value)
 {
-_free((void**)&value->cnName);
-_free((void**)&value->enName);
-_free((void**)&value->webAddr);
-_free((void**)&value->userID);
-_free((void**)&value->keyLen);
-_free((void**)&value->updateTime);
-_free((void**)&value->keyType);
-_free((void**)&value->allowSpec);
-}
-
-static char* _put2Value(char* _s,char** _d)
-{
-size_t len = utility_strlen(_s)+1;
-
-if (len == 1)
-	return NULL;
-
-if ((*_d = (char*)malloc(len)) == NULL)
-{
-	printf("malloc is error,len=%zd,[%s]\n",len,strerror(errno));
-	return NULL;
-}
-
-memset(*_d,0x0,len);
-strncpy(*_d,_s,len-1);
-	
-return *_d;
-}
-
-static uInt _getKeyLen(const char* keylen)
-{
-uInt r = 0;
-uInt len = utility_strlen(keylen);
-int i=0;
-
-if (len == 4)
-{
-	r=(keylen[0]-48)*10;
-	i=1;
-}
-
-for(;i<len;i++)
-{
-	switch(keylen[i])
-	{
-        case '1':r+=1;break;
-        case '2':r+=2;break;
-        case '3':r+=3;break;
-        case '4':r+=4;break;
-        case '5':r+=5;break;
-        case '6':r+=6;break;
-        case '7':r+=7;break;
-        case '8':r+=8;break;
-        case '9':r+=9;break;
-        default:break;		
-	}
-}
-
-return r;
+utility_free((void**)&value->cnName);
+utility_free((void**)&value->enName);
+utility_free((void**)&value->webAddr);
+utility_free((void**)&value->userID);
+utility_free((void**)&value->keyLen);
+utility_free((void**)&value->updateTime);
+utility_free((void**)&value->keyType);
+utility_free((void**)&value->allowSpec);
 }
 
 /*校验密码生成次数,如果为空赋默认值*/
@@ -139,16 +79,47 @@ if (!isdigit(*value[0]))
 return *value;
 }
 
-static int _initValue(char** s,size_t len)
+/*
+功能:匹配关键字(不区分大小写)
+根据输入值，在中文名称和网址中匹配是否存在,存在返回1,不存在返回0
+ */
+static int compValue(keyinfoPtr ptrJson,const char* keyWord)
 {
-	if ((*s = (char*)malloc(len)) == NULL)
-	{
-		printf("malloc is error,[%s]\n",strerror(errno));
-		return -1;
-	}
-	
-	memset(*s,0x0,len);
+char* tmp=NULL;
+char newvalue[strlen(keyWord)+1];
+
+if (strstr(ptrJson->cnName,keyWord) != NULL)
+	return 1;
+
+utility_put2Value(ptrJson->enName,&tmp);
+if (tmp == NULL)
 	return 0;
+
+memset(newvalue,0x0,sizeof(newvalue));
+snprintf(newvalue,sizeof(newvalue),"%s",keyWord);
+utility_tolower(newvalue);
+utility_tolower(tmp);
+
+if (strstr(tmp,newvalue) != NULL)
+{
+	utility_free((void*)&tmp);
+	return 1;
+}
+utility_free((void*)&tmp);
+
+utility_put2Value(ptrJson->webAddr,&tmp);
+if (tmp == NULL)
+	return 0;
+
+utility_tolower(tmp);
+if (strstr(tmp,newvalue) != NULL)
+{
+	utility_free((void*)&tmp);
+	return 1;
+}
+
+utility_free((void*)&tmp);
+return 0;
 }
 
 /*校验密码长度,如果为空赋默认值*/
@@ -178,13 +149,14 @@ else
 return *value;
 }
 
-static int _getKeyData(const char* jsonbuf,const char* primary)
+static int _getKeyData(const char* jsonbuf,const char* primary,const char* keyword)
 {
 cJSON *root,*array,*value;
 keyinfoPtr ptrJson;
 int i,j,num,addrlen,len;
 int labelLen=sizeof(JSON_LABEL)/sizeof(JSON_LABEL[0]);
 char* password,*code,*addr;
+char userid[100];
 
 if ((root = cJSON_Parse(jsonbuf)) == NULL)
 {
@@ -215,113 +187,211 @@ for(i=0;i<num;i++)
 		switch(j)
 		{
 			case 0:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->cnName);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->cnName);
 				break;
 			case 1:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->enName);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->enName);
 				break;
 			case 2:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->webAddr);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->webAddr);
 				utility_tolower(ptrJson->webAddr);
 				break;
 			case 3:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->userID);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->userID);
 				break;
 			case 4:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->keyLen);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->keyLen);
 				_initKeylen(&ptrJson->keyLen);
 				break;
 			case 5:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->updateTime);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->updateTime);
 				_initTimes(&ptrJson->updateTime);
 				break;
 			case 6:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->keyType);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->keyType);
 				break;
 			case 7:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->allowSpec);
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->allowSpec);
 				break;
 			case 8:
-				_put2Value(cJSON_GetStringValue(value),&ptrJson->webIcon);				
+				utility_put2Value(cJSON_GetStringValue(value),&ptrJson->webIcon);				
 				break;
 		}
 	}
-	
-	addrlen = utility_strlen(ptrJson->webAddr);
-	if ((utility_strlen(ptrJson->userID) > 0) && (addrlen > 0))
-	{
-		len = _getKeyLen(ptrJson->keyLen)+1;
-		_initValue(&password,len);
-		
-		_initValue(&code,addrlen+utility_strlen(ptrJson->userID)+utility_strlen(ptrJson->updateTime)+utility_strlen(primary) + 1);
-		
-		_initValue(&addr,addrlen+1);
 
-		_RawAddr(ptrJson->webAddr,addr,addrlen+1);
+	if (compValue(ptrJson,keyword) > 0)
+	{
+		if ((ptrJson->userID == NULL) || (strlen(ptrJson->userID) == 0))
+		{
+			printf("input userid:");
+			memset(userid,0x0,sizeof(userid));
+			scanf("%s",userid);
+			utility_put2Value(userid,&ptrJson->userID);
+		}
+		addrlen = utility_strlen(ptrJson->webAddr);
+		if ((utility_strlen(ptrJson->userID) > 0) && (addrlen > 0))
+		{
+			len = utility_getKeyLen(ptrJson->keyLen)+1;
+			utility_initValue(&password,len);
+			
+			utility_initValue(&code,addrlen+utility_strlen(ptrJson->userID)+utility_strlen(ptrJson->updateTime)+utility_strlen(primary) + 1);
+			
+			utility_initValue(&addr,addrlen+1);
+
+			_RawAddr(ptrJson->webAddr,addr,addrlen+1);
 /* 如果密钥类型为空,
 原始加密串组成:地址+主密钥+用户名+更新次数
 原始加密串组成:地址+主密钥+用户名+更新次数+密钥类型
 */
-		if (ptrJson->keyType == NULL)
-			sprintf(code,"%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime);
-		else	
-			sprintf(code,"%s%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime,ptrJson->keyType);
+			if (ptrJson->keyType == NULL)
+				sprintf(code,"%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime);
+			else	
+				sprintf(code,"%s%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime,ptrJson->keyType);
 
-		codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
-		printf("[%s]\t[%s]\tuser=[%s]\tpassword=[%s]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
-		
-		_free((void*)&password);
-		_free((void*)&code);
-		_free((void*)&addr);
+			codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
+			printf("[%s]\t[%s]\tuser=[%s]\tpassword=[%s]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
+			
+			utility_free((void*)&password);
+			utility_free((void*)&code);
+			utility_free((void*)&addr);
+		}
 	}
-
 	deallocate(ptrJson);
 }
-_free((void**)ptrJson);
+utility_free((void**)ptrJson);
 
 cJSON_Delete(root);
 return 0;
 }
 
+/*
+功能: 根据输入用户名，返回对应的用户文件
+0-成功
+-1-失败
+*/
+static int parseUser(const char* userid,char** userfile)
+{
+char filename[255];
+cJSON *root,*array;
+FILE *fp;
+char* buff;
+int i,num;
+off_t fileLen;
+
+memset(filename,0x0,sizeof(filename));
+snprintf(filename,sizeof(filename),"user.json");
+if ((fileLen = utility_getfilesize(filename)) == 0)
+	return -1;
+
+if ((buff = (char*)malloc(fileLen+1)) == NULL)
+{
+	printf("malloc is error,[%ld],[%s]\n",fileLen,strerror(errno));
+	return -1;
+}
+
+if ((fp =fopen(filename,"r")) == NULL)
+{
+	fprintf(stderr,"open [%s] is error,[%s]\n",filename,strerror(errno));
+	utility_free((void*)&buff);
+	return -1;
+}
+memset(buff,0x0,fileLen+1);
+fread(buff,fileLen+1,1,fp);
+fclose(fp);
+
+if ((root = cJSON_Parse(buff)) == NULL)
+{
+	printf("root error [%s]\n",cJSON_GetErrorPtr());
+	utility_free((void*)&buff);
+	return -1;
+}
+
+num = cJSON_GetArraySize(root);
+for(i=0;i<num;i++)
+{
+	if ((array = cJSON_GetArrayItem(root,i)) == NULL)
+	{
+		printf("array error [%s]\n",cJSON_GetErrorPtr());
+		cJSON_Delete(root);
+		utility_free((void*)&buff);
+		return -1;
+	}
+
+	if (strncasecmp(cJSON_GetStringValue(cJSON_GetObjectItem(array,"userID")),userid,strlen(userid)) == 0)
+	{
+		utility_put2Value(cJSON_GetStringValue(cJSON_GetObjectItem(array,"filename")),userfile);
+		cJSON_Delete(root);
+		utility_free((void*)&buff);
+		return 0;
+	}
+}
+
+utility_free((void*)&buff);
+return -1;
+}
+
 int main(int argc,char* argv[])
 {
 FILE *fp;
-char filename[255+1];
-char* filebuf;
+char password[100];
+char *filebuf=NULL,*filename=NULL;
 off_t fileLen;
 
 if (argc < 3)
 {
-	printf("usage:%s user primaryKey [keyword]\n",argv[0]);
+	printf("usage:%s user keyword\n",argv[0]);
 	exit(-1);
 }
 
-memset(filename,0x0,sizeof(filename));
-snprintf(filename,sizeof(filename),"%s.json",argv[1]);
+memset(password,0x0,sizeof(password));
+printf("input %s password:",argv[1]);
+scanf("%s",password);
+
+if (strlen(password) == 0)
+	exit(-1);
+
+if (parseUser(argv[1],&filename) < 0)
+{
+	printf("[%s]file is not exists\n",argv[1]);
+	utility_free((void*)&filename);
+	exit(-1);
+}
+
+if (filename == NULL)
+{
+	utility_free((void*)&filename);
+	exit(-1);
+}
 
 if ((fileLen = utility_getfilesize(filename)) == 0)
+{
+	printf("[%s] is empty\n",filename);
+	utility_free((void*)&filename);
 	exit(-1);
+}
 
 if ((filebuf = (char*)malloc(fileLen+1)) == NULL)
 {
 	printf("malloc is error,[%ld],[%s]\n",fileLen,strerror(errno));
+	utility_free((void*)&filename);
 	exit(-1);
 }
 
 if ((fp = fopen(filename,"r")) == NULL)
 {
 	printf("open %s is error,[%s]\n",filename,strerror(errno));
-	free(filebuf);
+	utility_free((void*)&filebuf);
+	utility_free((void*)&filename);
 	exit(-1);
 }
+utility_free((void*)&filename);
 
 memset(filebuf,0x0,fileLen+1);
 fread(filebuf,fileLen,1,fp);
 fclose(fp);
 
-_getKeyData(filebuf,argv[2]);
-
-free(filebuf);
+_getKeyData(filebuf,password,argv[2]);
+utility_free((void*)&filebuf);
 
 return 0;
 }

@@ -234,3 +234,75 @@ while (*str != '\0')
 
 return 0;
 }
+
+void utility_free(void** p_ptr)
+{
+  if ((p_ptr != NULL) && (*p_ptr != NULL))
+  {
+    free(*p_ptr);
+    *p_ptr = NULL;
+  }
+}
+
+char* utility_put2Value(char* _s,char** _d)
+{
+size_t len = utility_strlen(_s)+1;
+
+if (len == 1)
+	return NULL;
+
+if ((*_d = (char*)malloc(len)) == NULL)
+{
+	printf("malloc is error,len=%zd,[%s]\n",len,strerror(errno));
+	return NULL;
+}
+
+memset(*_d,0x0,len);
+strncpy(*_d,_s,len-1);
+	
+return *_d;
+}
+
+uInt utility_getKeyLen(const char* keylen)
+{
+uInt r = 0;
+uInt len = utility_strlen(keylen);
+int i=0;
+
+if (len == 4)
+{
+	r=(keylen[0]-48)*10;
+	i=1;
+}
+
+for(;i<len;i++)
+{
+	switch(keylen[i])
+	{
+        case '1':r+=1;break;
+        case '2':r+=2;break;
+        case '3':r+=3;break;
+        case '4':r+=4;break;
+        case '5':r+=5;break;
+        case '6':r+=6;break;
+        case '7':r+=7;break;
+        case '8':r+=8;break;
+        case '9':r+=9;break;
+        default:break;		
+	}
+}
+
+return r;
+}
+
+int utility_initValue(char** s,size_t len)
+{
+	if ((*s = (char*)malloc(len)) == NULL)
+	{
+		printf("malloc is error,[%s]\n",strerror(errno));
+		return -1;
+	}
+	
+	memset(*s,0x0,len);
+	return 0;
+}

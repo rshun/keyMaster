@@ -2,8 +2,8 @@ include ../etc/make.setup
 USERINCL=
 OBJDIR=../obj/
 LIBDIR=../lib/
-PUBOBJS = codeutil.o utility.o sha2.o
-KEYOBJS = cJSON.o myKey.o
+PUBOBJS = codeutil.o utility.o sha2.o cJSON.o
+KEYOBJS = myKey.o
 MYLIBSO = $(LIBDIR)libmykey$(BITS).so
 MYLIBA = $(LIBDIR)libmykey$(BITS).a
 PARAM = -L$(TOPLIBDIR) -lmykey$(BITS)
@@ -17,7 +17,7 @@ $(MYLIBSO):$(PUBOBJS)
 	$(SO) $@ $(addprefix $(OBJDIR),$(PUBOBJS))
 
 myKey:$(KEYOBJS)
-	$(EXE) $@ $(addprefix $(OBJDIR),$(KEYOBJS)) $(PARAM)
+	$(EXE) $@ $(addprefix $(OBJDIR),$(KEYOBJS)) $(MYLIBA)
 
 install:
 	$(CP) myKey $(TOPBINDIR)

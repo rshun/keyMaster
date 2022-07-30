@@ -32,4 +32,8 @@ char* utility_tolower(char* );
 char* utility_toupper(char* );
 off_t utility_getfilesize(const char* );
 int utility_isdigitstr(const char* );
+void utility_free(void** );
+char* utility_put2Value(char* ,char** );
+uInt utility_getKeyLen(const char* );
+int utility_initValue(char** ,size_t );
 #endif
