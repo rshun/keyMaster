@@ -31,5 +31,10 @@ install:
 
 .PHONY : clean
 clean:
+ifeq ($(OSNAME),Windows)
+	$(RM) $(addprefix $(OBJDIR),$(APPSOBJS)) $(APPS) 2>NUL
+	$(RM) core.* *.exe 2>NUL
+else
 	$(RM) $(addprefix $(OBJDIR),$(APPSOBJS)) $(APPS)
 	$(RM) core.* *.exe
+endif

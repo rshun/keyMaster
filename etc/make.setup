@@ -49,8 +49,8 @@ ifeq ($(OSNAME),Linux)
 	EXECOMPILE+= -m$(BITS) -c -DLINUX -Wall
 	PARAM = -L$(LIBDIR) -l$(LIBNAME) -L/usr/lib/ -lsqlite3
 else ifeq ($(OSNAME),Windows)
-    $(shell mkdir $(PROJECTHOME)\\obj)
-    $(shell mkdir $(PROJECTHOME)\\lib)
+    $(shell if NOT EXIST $(PROJECTHOME)\\obj (mkdir $(PROJECTHOME)\\obj))
+    $(shell if NOT EXIST $(PROJECTHOME)\\lib (mkdir $(PROJECTHOME)\\lib))
     LD=ar -r
     SO=gcc -shared -m$(BITS) -o
     CC=gcc

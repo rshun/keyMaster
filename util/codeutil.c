@@ -26,17 +26,17 @@ static size_t _splitKeyLen(const char* s,keyinfoPtr info)
 size_t total;
 int i;
 
-	switch(utility_strlen(s))
+	switch(util_strlen(s))
 	{
 		case 3:
-			info->alphalen = utility_ch2num(s[0]);
-			info->digitlen = utility_ch2num(s[1]);
-			info->spechlen = utility_ch2num(s[2]);
+			info->alphalen = util_ch2num(s[0]);
+			info->digitlen = util_ch2num(s[1]);
+			info->spechlen = util_ch2num(s[2]);
 			break;
 		case 4:
-			info->alphalen = utility_ch2num(s[0]) * 10 + utility_ch2num(s[1]);
-			info->digitlen = utility_ch2num(s[2]);
-			info->spechlen = utility_ch2num(s[3]);
+			info->alphalen = util_ch2num(s[0]) * 10 + util_ch2num(s[1]);
+			info->digitlen = util_ch2num(s[2]);
+			info->spechlen = util_ch2num(s[3]);
 			if (info->alphalen > 52)
 				info->alphalen = 8;
 			break;
@@ -83,8 +83,8 @@ return total;
 /* 去掉重复的字符串 */
 static char _rmDupStr(char* str,uInt slen)
 {
-size_t len = utility_strlen(str);
-char value[utility_strlen(ALPHABET)+1];
+size_t len = util_strlen(str);
+char value[util_strlen(ALPHABET)+1];
 int result[26]={0};
 int i,j,v=1;
 
@@ -97,7 +97,7 @@ for(i=0;i<len;i++)
 }
 
 /* 去掉重复字母 */
-for(i=0,j=0;i<utility_strlen(ALPHABET);i++)
+for(i=0,j=0;i<util_strlen(ALPHABET);i++)
 {
 	if (result[i] == 0) 
 		value[j++] = ALPHABET[i];
@@ -106,14 +106,14 @@ for(i=0,j=0;i<utility_strlen(ALPHABET);i++)
 for(i=0;i<len;i++)
 	v += (str[i] * (i+slen));
 
-return value[v % utility_strlen(value)];
+return value[v % util_strlen(value)];
 }
 
 /* 去掉重复的数字  */
 static char _rmDupDigit(char* str,uInt slen)
 {
-size_t len = utility_strlen(str);
-char value[utility_strlen(DIGIT)+1];
+size_t len = util_strlen(str);
+char value[util_strlen(DIGIT)+1];
 int result[10]={0};
 int i,j,v=1;
 
@@ -127,7 +127,7 @@ for(i=0;i<len;i++)
 }
 
 /* 去掉重复数字 */
-for(i=0,j=0;i<utility_strlen(DIGIT);i++)
+for(i=0,j=0;i<util_strlen(DIGIT);i++)
 {
 	if (result[i] == 0) 
 		value[j++] = DIGIT[i];
@@ -136,7 +136,7 @@ for(i=0,j=0;i<utility_strlen(DIGIT);i++)
 for(i=0;i<len;i++)
 	v += (str[i] * (i+slen));
 
-return value[v % utility_strlen(value)];
+return value[v % util_strlen(value)];
 }
 
 static void _splitstring(const char* s,char* digit,char* alphabet)
@@ -158,21 +158,21 @@ int i;
 char temp1[SHA512_LEN],temp2[SHA512_LEN];
 
 memset(temp2,0x0,sizeof(temp2));
-memcpy(temp2,s,utility_strlen(s));
+memcpy(temp2,s,util_strlen(s));
 	
 for(i=0;i<LOOP;i++)
 {
 	memset(temp1,0x0,sizeof(temp1));
-	utility_sha384(temp2,temp1);
+	util_sha384(temp2,temp1);
 	
 	memset(temp2,0x0,sizeof(temp2));
-	utility_invert(temp1,temp2,sizeof(temp2));
+	util_invert(temp1,temp2,sizeof(temp2));
 	
 	memset(temp1,0x0,sizeof(temp1));
-	utility_sha512(temp2,temp1);
+	util_sha512(temp2,temp1,strlen(temp1));
 
 	memset(temp2,0x0,sizeof(temp2));
-	utility_invert(temp1,temp2,sizeof(temp2));
+	util_invert(temp1,temp2,sizeof(temp2));
 }
 
 _splitstring(temp2,digit,alpha);
@@ -187,7 +187,7 @@ char c;
 
 	for(i=0;i<len;i++)
 	{
-		c =  utility_galpha(utility_sumchar(p)+utility_gdigit(q));
+		c =  util_galpha(util_sumchar(p)+util_gdigit(q));
 		if (len < 26)
 		{
 			/*去掉重复的数字或字符串*/
@@ -217,9 +217,9 @@ if (len == pwdLen)
 	for(i = 0; i < len; p++,q++,i++)
 	{
 		if (i % 2 != 0)
-			c = *(p+((utility_sumchar(p)*utility_gdigit(q)) %utility_strlen(p)));
+			c = *(p+((util_sumchar(p)*util_gdigit(q)) %util_strlen(p)));
 		else
-			c = *(p+((utility_gdigit(q)-utility_sumchar(p)) %utility_strlen(p)));
+			c = *(p+((util_gdigit(q)-util_sumchar(p)) %util_strlen(p)));
 		
 		if (strchr(dst,c) != NULL)
 			c = _rmDupDigit(dst,len);
@@ -231,10 +231,10 @@ else	/* 随机更改 */
 {
     for(i = 0; i < len; p++,q++)
     {
-        if ((utility_strlen(p) == 0) || (utility_strlen(q) == 0))
+        if ((util_strlen(p) == 0) || (util_strlen(q) == 0))
             break;
 
-        j = (utility_sumchar(p) + utility_gdigit(q)) % pwdLen ;
+        j = (util_sumchar(p) + util_gdigit(q)) % pwdLen ;
 		
         if (islower(*(dst+j)) != 0)
         {
@@ -242,7 +242,7 @@ else	/* 随机更改 */
             switch(flag)
             {
                 case 1:	/* 特殊字符 */
-                    *(dst+j) = utility_char2spec(*(p+j));
+                    *(dst+j) = util_char2spec(*(p+j));
                     break;
                 case 2: /* 数字 */
                     *(dst+j) = *(p+j);
@@ -274,7 +274,7 @@ while(*(s+i) != '\0')
 
 	if (strchr(specstr,*(s+i)) == NULL)
 	{
-		*(s+i) = specstr[i % (utility_strlen(specstr))];
+		*(s+i) = specstr[i % (util_strlen(specstr))];
 	}
 	i++;
 }
@@ -319,7 +319,7 @@ char* p = code;
 size_t passwordLen;
 keyinfo myKeyInfo;
 
-if ((utility_strlen(s) == 0) || (utility_strlen(s) >= SHA512_LEN))
+if ((util_strlen(s) == 0) || (util_strlen(s) >= SHA512_LEN))
 	return NULL;
 
 memset(&myKeyInfo,0x0,sizeof(myKeyInfo));
@@ -348,7 +348,7 @@ _convert(digit_str,alpha_str,code,myKeyInfo.upperlen,passwordLen,3);
 if (myKeyInfo.alphalen > 0)
 	_lowstrpos(code);
 
-if (utility_strlen(spec) > 0)
+if (util_strlen(spec) > 0)
 	_specStr(code,spec);
 
 return p;

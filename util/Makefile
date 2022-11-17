@@ -26,6 +26,11 @@ $(MYLIB):$(PUBOBJS)
 
 .PHONY : clean
 clean:
-	$(RM) $(addprefix $(OBJDIR),$(PUBOBJS))
+ifeq ($(OSNAME),Windows)
+	$(RM) $(addprefix $(OBJDIR),$(PUBOBJS)) 2>NUL
+	$(RM) $(MYLIB) 2>NUL
+else
+    $(RM) $(addprefix $(OBJDIR),$(PUBOBJS))
 	$(RM) $(MYLIB)
+endif
 
