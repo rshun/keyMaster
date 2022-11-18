@@ -44,4 +44,9 @@ int updateNode(LinkedListPtr, char* ,int );
 void destoryKey(void** );
 int addnewuser(int ,const char* ,const char*);
 int addnewconf(FILE* ,char* ,size_t ,int);
+int decode_encfile(const char* ,const char* ,const char* ,char** );
+char* initTimes(char** );
+char* initKeylen(char** );
+int compValue(keyinfoPtr ,const char* );
+
 #endif

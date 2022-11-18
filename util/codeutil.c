@@ -169,7 +169,7 @@ for(i=0;i<LOOP;i++)
 	util_invert(temp1,temp2,sizeof(temp2));
 	
 	memset(temp1,0x0,sizeof(temp1));
-	util_sha512(temp2,temp1,strlen(temp1));
+	util_sha512(temp2,temp1,strlen(temp2));
 
 	memset(temp2,0x0,sizeof(temp2));
 	util_invert(temp1,temp2,sizeof(temp2));

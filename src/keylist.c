@@ -101,45 +101,6 @@ return ret;
 }
 
 /*
-功能: 读取文件内容并解密
-参数1: 密文文件
-参数2: 向量
-参数3: 密钥
-参数4: 明文
-*/
-static int _decode(const char* filename,const char* iv,const char* key,char** plaintxt)
-{
-int cipherlen;
-char* ciphertxt = NULL;
-
-if ((cipherlen = getfilebuf(filename,&ciphertxt)) < 0)
-	return cipherlen;
-
-int plainlen = cipherlen;
-
-if ((*plaintxt = (char*)malloc(plainlen)) == NULL)
-{
-	fprintf(stderr,"malloc is error,len=%d,[%s]\n",plainlen,strerror(errno));
-	return -1;
-}
-
-memset(*plaintxt,0x0,plainlen);
-
-if (decrypt_aes256_cbc(key,ciphertxt,cipherlen,iv,*plaintxt,plainlen) < 0)
-{
-	util_free((void*)&ciphertxt);
-	return -2;
-}
-
-util_free((void*)&ciphertxt);
-
-if (*plaintxt[0] == '[')
-	return plainlen;
-else
-	return -2;
-}
-
-/*
 显示密码配置
 参数1: 密文文件
 参数2: 向量
@@ -151,7 +112,7 @@ static int _printconf(const char* filename,const char* iv,const char* key,const 
 int ret;
 char* plaintxt = NULL;
 LinkedList keyList;
-ret = _decode(filename,iv,key,&plaintxt);
+ret = decode_encfile(filename,iv,key,&plaintxt);
 if (ret < 0)
 {
 	printf("解密失败,ret%d\n",ret);
@@ -193,7 +154,7 @@ int flag=0;
 
 if (access(filename,F_OK) == 0)
 {
-	plainlen = _decode(filename,iv,key,&plaintxt);
+	plainlen = decode_encfile(filename,iv,key,&plaintxt);
 	if (plainlen == -2)
 	{
 		util_free((void*)&plaintxt);
@@ -245,7 +206,7 @@ char* plaintxt = NULL;
 int ret,num,serial=0;
 char confim[1+1];
 
-ret = _decode(filename,iv,key,&plaintxt);
+ret = decode_encfile(filename,iv,key,&plaintxt);
 if (ret < 0)
 {
 	printf("解密失败\n");
@@ -305,7 +266,7 @@ char* plaintxt = NULL;
 int ret,num,serial=0;
 char confim[1+1];
 
-ret = _decode(filename,iv,key,&plaintxt);
+ret = decode_encfile(filename,iv,key,&plaintxt);
 if (ret < 0)
 {
 	printf("解密失败\n");
@@ -363,7 +324,7 @@ char* plaintxt = NULL;
 int ret;
 char password[100];
 
-ret = _decode(filename,iv,key,&plaintxt);
+ret = decode_encfile(filename,iv,key,&plaintxt);
 if (ret < 0)
 {
 	printf("解密失败\n");
@@ -415,7 +376,7 @@ int ret;
 char newfile[255];
 FILE *fp;
 
-ret = _decode(filename,iv,key,&plaintxt);
+ret = decode_encfile(filename,iv,key,&plaintxt);
 if (ret < 0)
 {
 	fprintf(stderr,"解密失败\n");

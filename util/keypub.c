@@ -4,6 +4,44 @@
 
 const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","keyType","allowSpec","webIcon"};
 
+/*
+功能: 读取文件内容并解密
+参数1: 密文文件
+参数2: 向量
+参数3: 密钥
+参数4: 明文
+*/
+int decode_encfile(const char* filename,const char* iv,const char* key,char** plaintxt)
+{
+int cipherlen,plainlen,ret;
+char* ciphertxt = NULL;
+
+if ((cipherlen = getfilebuf(filename,&ciphertxt)) < 0)
+	return cipherlen;
+
+plainlen = cipherlen;
+if ((*plaintxt = (char*)malloc(plainlen)) == NULL)
+{
+	fprintf(stderr,"malloc is error,len=%d,[%s]\n",plainlen,strerror(errno));
+	util_free((void*)&ciphertxt);
+	return -1;
+}
+
+memset(*plaintxt,0x0,plainlen);
+
+if ((ret = decrypt_aes256_cbc(key,ciphertxt,cipherlen,iv,*plaintxt,plainlen)) < 0)
+{
+	util_free((void*)&ciphertxt);
+	return -2;
+}
+
+util_free((void*)&ciphertxt);
+if (*plaintxt[0] == '[')
+	return plainlen;
+else
+	return -2;
+}
+
 /* 
 功能: 读取文件内容至filebuf
 参数1: 文件名
@@ -225,7 +263,7 @@ return 0;
 }
 
 /*校验密码长度,如果为空赋默认值*/
-static char* _initKeylen(char** value)
+char* initKeylen(char** value)
 {
 uInt len = util_strlen(DEFAULT_PWDLEN) + 1;
 
@@ -254,7 +292,7 @@ return *value;
 /*
 校验密码生成次数,如果为空赋默认值
 */
-static char* _initTimes(char** value)
+char* initTimes(char** value)
 {
 
 if(util_strlen(*value) == 0)
@@ -331,11 +369,11 @@ for(i=0;i<num;i++)
 				break;
 			case 4:
 				util_put2Value(cJSON_GetStringValue(value),&ptrJson->keyLen);
-				_initKeylen(&ptrJson->keyLen);
+				initKeylen(&ptrJson->keyLen);
 				break;
 			case 5:
 				util_put2Value(cJSON_GetStringValue(value),&ptrJson->updateTime);
-				_initTimes(&ptrJson->updateTime);
+				initTimes(&ptrJson->updateTime);
 				break;
 			case 6:
 				util_put2Value(cJSON_GetStringValue(value),&ptrJson->keyType);
