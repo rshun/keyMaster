@@ -1,17 +1,17 @@
 include ../etc/make.setup
 
 ifeq ($(OSNAME),Linux)
-    BINDIR=$(PROJECTHOME)/bin/
-    OBJDIR=$(PROJECTHOME)/obj/
-    LIBDIR=$(PROJECTHOME)/lib/
-    INCDIR=$(PROJECTHOME)/util/
-    LIBNAME=mykey$(BITS)
+	BINDIR=$(PROJECTHOME)/bin/
+	OBJDIR=$(PROJECTHOME)/obj/
+	LIBDIR=$(PROJECTHOME)/lib/
+	INCDIR=$(PROJECTHOME)/util/
+	LIBNAME=mykey$(BITS)
 else ifeq ($(OSNAME),Windows)
-    BINDIR:=$(PROJECTHOME)\\bin\\
-    OBJDIR:=$(PROJECTHOME)\\obj\\
-    LIBDIR:=$(PROJECTHOME)\\lib\\
-    INCDIR=$(PROJECTHOME)\\util\\
-    LIBNAME:=mykey$(BITS)
+	BINDIR:=$(PROJECTHOME)\\bin\\
+	OBJDIR:=$(PROJECTHOME)\\obj\\
+	LIBDIR:=$(PROJECTHOME)\\lib\\
+	INCDIR=$(PROJECTHOME)\\util\\
+	LIBNAME:=mykey$(BITS)
 endif
 
 SOURCE=$(wildcard *.c)
