@@ -1,7 +1,6 @@
 #ifndef __KEYPUB_H
 #define __KEYPUB_H
 
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -13,6 +12,10 @@
 
 #ifndef uInt
 #define uInt unsigned int
+#endif
+
+#ifndef CONFFILENAME
+#define CONFFILENAME "user.json"
 #endif
 
 typedef struct
@@ -36,14 +39,14 @@ int   which;
 }keyinfo,*keyinfoPtr;
 
 off_t getfilebuf(const char* ,char** );
-int parseUser(const char* ,char** );
-int updateEncflag(const char* ,const char* );
+int parseUser(const char* ,const char*,char**,char** );
+int updateEncflag(const char* ,const char* ,const char*);
 int addlist4match(const char* ,const char* ,LinkedListPtr );
 int deleteMatchNode(LinkedListPtr, char* ,int );
-int updateNode(LinkedListPtr, char* ,int );
+int updateNode(LinkedListPtr, char* ,int ,const char*,const char*);
 void destoryKey(void** );
-int addnewuser(int ,const char* ,const char*);
-int addnewconf(FILE* ,char* ,size_t ,int);
+int addnewuser(int ,const char* ,const char*,const char*);
+int addnewconf(const char* ,char* ,size_t ,int);
 int decode_encfile(const char* ,const char* ,const char* ,char** );
 char* initTimes(char** );
 char* initKeylen(char** );

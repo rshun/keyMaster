@@ -83,22 +83,32 @@ return filelen;
 /*
 功能: 根据输入用户名，返回对应的用户文件
 0-成功(不加密),1-成功(加密)
--1-用户不存在
--2-user.json文件不存
+-1-配置文件中不存在该用户
+-2-user.json文件不存在
 -3-其他错误
 */
-int parseUser(const char* userid,char** userfile)
+int parseUser(const char* userid,const char* filepath,char** configfile,char** userfile)
 {
-char filename[255];
 cJSON *root,*array;
-char* buff;
-int i,num;
+char* buff = NULL;
+int i,num,conffileLen,userfileLen;
 char encflag[1+1]={0};
 
-memset(filename,0x0,sizeof(filename));
-snprintf(filename,sizeof(filename),"user.json");
+conffileLen = strlen(filepath)+strlen(CONFFILENAME)+3;
+if ((*configfile = (char*)malloc(conffileLen)) == NULL)
+{
+	fprintf(stderr,"malloc configfile is error,%d,[%s]\n",conffileLen,strerror(errno));
+	return -3;
+}
 
-if (getfilebuf(filename,&buff) < 0)
+memset(*configfile,0x0,conffileLen);
+#ifdef LINUX
+snprintf(*configfile,conffileLen,"%s/%s",filepath,CONFFILENAME);
+#elif WIN32
+snprintf(*configfile,conffileLen,"%s\\%s",filepath,CONFFILENAME);
+#endif
+
+if (getfilebuf(*configfile,&buff) < 0)
 	return -2;
 
 if ((root = cJSON_Parse(buff)) == NULL)
@@ -121,7 +131,21 @@ for(i=0;i<num;i++)
 
 	if (strncasecmp(cJSON_GetStringValue(cJSON_GetObjectItem(array,"userID")),userid,strlen(userid)) == 0)
 	{
-		util_put2Value(cJSON_GetStringValue(cJSON_GetObjectItem(array,"filename")),userfile);
+		userfileLen = strlen(filepath) + strlen(cJSON_GetStringValue(cJSON_GetObjectItem(array,"filename"))) + 3;
+		if ((*userfile = (char*)malloc(userfileLen)) == NULL)
+		{
+			fprintf(stderr,"malloc configfile is error,%d,[%s]\n",userfileLen,strerror(errno));
+			cJSON_Delete(root);
+			util_free((void*)&buff);
+			return -3;
+		}
+		memset(*userfile,0x0,userfileLen);
+		#ifdef LINUX
+			snprintf(*userfile,userfileLen,"%s/%s",filepath,cJSON_GetStringValue(cJSON_GetObjectItem(array,"filename")));
+		#elif WIN32
+			snprintf(*userfile,userfileLen,"%s\\%s",filepath,cJSON_GetStringValue(cJSON_GetObjectItem(array,"filename")));
+		#endif
+		//util_put2Value(cJSON_GetStringValue(cJSON_GetObjectItem(array,"filename")),userfile);
         if (cJSON_GetStringValue(cJSON_GetObjectItem(array,"isEncrypt")) != NULL)
 		{
 			snprintf(encflag,sizeof(encflag),"%s",cJSON_GetStringValue(cJSON_GetObjectItem(array,"isEncrypt")));
@@ -140,22 +164,19 @@ util_free((void*)&buff);
 return -1;
 }
 
-int updateEncflag(const char* userid,const char* encflag)
+int updateEncflag(const char* userid,const char* encflag,const char* conffile)
 {
-char filename[255],newfile[255];
+char newfile[255];
 cJSON *root,*array;
 char* buff;
 int i,num;
 off_t filelen;
 FILE *fp;
 
-memset(filename,0x0,sizeof(filename));
 memset(newfile,0x0,sizeof(newfile));
+snprintf(newfile,sizeof(newfile),"%s.new",conffile);
 
-snprintf(filename,sizeof(filename),"user.json");
-snprintf(newfile,sizeof(newfile),"%s.new",filename);
-
-if ((filelen = getfilebuf(filename,&buff)) < 0)
+if ((filelen = getfilebuf(conffile,&buff)) < 0)
 	return -1;
 
 if ((root = cJSON_Parse(buff)) == NULL)
@@ -183,12 +204,12 @@ for(i=0;i<num;i++)
 		{
 			fwrite(cJSON_Print(root),strlen(cJSON_Print(root)),1,fp);
 			fclose(fp);
-			if (rename(newfile,filename) < 0 )
+			if (rename(newfile,conffile) < 0 )
 			{
 				if (errno == EEXIST)
-					remove(filename);
+					remove(conffile);
 			}
-			rename(newfile,filename);
+			rename(newfile,conffile);
 		}
 
 		cJSON_Delete(root);
@@ -444,7 +465,7 @@ return 0;
 /*
 功能: 更新json对象中updatetime
 */
-int updateNode(LinkedListPtr keylist,char* jsonbuf,int which)
+int updateNode(LinkedListPtr keylist,char* jsonbuf,int which,const char* type,const char* newvalue)
 {
 cJSON *root,*value;
 int count=0,match=-1;
@@ -476,12 +497,23 @@ if ((root = cJSON_Parse(jsonbuf)) == NULL)
 	return -1;
 }
 
-value = cJSON_GetObjectItem(cJSON_GetArrayItem(root,match),"updateTime");
+//更新updatetimes
+if (strncmp(type,"updateTime",strlen("updateTime")) == 0)
+{
+	value = cJSON_GetObjectItem(cJSON_GetArrayItem(root,match),"updateTime");
 
-memset(cUpdatetime,0x0,sizeof(cUpdatetime));
-snprintf(cUpdatetime,sizeof(cUpdatetime),"%d",atoi(cJSON_GetStringValue(value)) + 1);
+	memset(cUpdatetime,0x0,sizeof(cUpdatetime));
+	snprintf(cUpdatetime,sizeof(cUpdatetime),"%d",atoi(cJSON_GetStringValue(value)) + 1);
 
-cJSON_ReplaceItemInObject(cJSON_GetArrayItem(root,match),"updateTime",cJSON_CreateString(cUpdatetime));
+	cJSON_ReplaceItemInObject(cJSON_GetArrayItem(root,match),"updateTime",cJSON_CreateString(cUpdatetime));
+}
+else
+{
+	if (cJSON_GetObjectItem(cJSON_GetArrayItem(root,match),type) != NULL)
+		cJSON_ReplaceItemInObject(cJSON_GetArrayItem(root,match),type,cJSON_CreateString(newvalue));
+	else
+		cJSON_AddItemReferenceToObject(cJSON_GetArrayItem(root,match),type,cJSON_CreateString(newvalue));
+}
 
 strcpy(jsonbuf,cJSON_Print(root));
 
@@ -493,12 +525,12 @@ return 0;
 功能: 在user.json新增用户及相关信息
 参数1: 标志（-2，新增user.json文件，并新增用户,-1新增用户
 参数2: 用户名
-参数3: json文件
+参数3: 用户配置文件 (带路径)
+参数4: 用户文件名
 */
-int addnewuser(int flag,const char* userid,const char* userfile)
+int addnewuser(int flag,const char* userid,const char* userconffile,const char* userfile)
 {
 FILE *fp;
-char conffile[]="user.json";
 cJSON *root,*newobj;
 char* buff;
 
@@ -514,7 +546,7 @@ if (flag == -2)	/*第一次添加用户*/
 }
 else	/* 新增用户 */
 {
-	if (getfilebuf(conffile,&buff) < 0)
+	if (getfilebuf(userconffile,&buff) < 0)
 		return -1;
 
 	if ((root = cJSON_Parse(buff)) == NULL)
@@ -533,9 +565,9 @@ else	/* 新增用户 */
 	cJSON_AddItemReferenceToArray(root,newobj);
 }
 
-if ((fp = fopen(conffile,"wb")) == NULL)
+if ((fp = fopen(userconffile,"wb")) == NULL)
 {
-	fprintf(stderr,"open [%s] is error,[%s]\n",conffile,strerror(errno));
+	fprintf(stderr,"open [%s] is error,[%s]\n",userconffile,strerror(errno));
 	cJSON_Delete(root);
 	return -1;
 }
@@ -547,12 +579,28 @@ cJSON_Delete(root);
 return 0;
 }
 
-int addnewconf(FILE* fp,char* filebuf,size_t filelen,int flag)
+/*
+功能: 读取自定义配置文件内容添加到json
+参数1: 自定义配置文件流
+参数2: 原密码配置明文
+参数3: 明文长度
+参数4: 标志,1-在原配置中追加, 0-新增配置
+
+返回: 0成功, 其余-失败
+*/
+int addnewconf(const char* conffilename,char* filebuf,size_t filelen,int flag)
 {
 cJSON *root,*new;
+FILE *fp;
 char buff[1024],name[1024],value[1024];
 int labelLen=sizeof(JSON_LABEL)/sizeof(JSON_LABEL[0]);
 int islabel[labelLen];
+
+if ((fp = fopen(conffilename,"rb")) == NULL)
+{
+	fprintf(stderr,"open [%s] is error,[%s]\n",conffilename,strerror(errno));
+	return -1;
+}
 
 new = cJSON_CreateObject();
 memset(&islabel,0,sizeof(islabel));
@@ -583,6 +631,7 @@ while (!feof(fp))
 		}
 	}
 }
+fclose(fp);
 
 for(int i=0;i<labelLen;i++)
 {

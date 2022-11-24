@@ -164,23 +164,34 @@ int main(int argc,char* argv[])
 {
 FILE *fp;
 char password[100],key[100];
-char *filebuf=NULL,*filename=NULL;
+char *filebuf=NULL;
+char *filename=NULL;
+char *conffile=NULL;
+char filepath[255];		/* 配置文件路径 */
 off_t fileLen;
 int ret;
 
 if (argc < 3)
 {
-	printf("usage:%s user keyword\n",argv[0]);
+	printf("usage:%s user keyword [configure path]\n",argv[0]);
 	exit(-1);
 }
 
-if ((ret = parseUser(argv[1],&filename)) < 0)
+memset(filepath,0x0,sizeof(filepath));
+if (argc > 3)
+	snprintf(filepath,sizeof(filepath),"%s",argv[3]);
+else
+	snprintf(filepath,sizeof(filepath),"./");
+
+ret = parseUser(argv[1],filepath,&conffile,&filename);
+if (ret < 0)
 {
 	printf("[%s]file is not exists\n",argv[1]);
 	util_free((void*)&filename);
-	exit(-1);
+	util_free((void*)&conffile);
+	exit(EXIT_FAILURE);
 }
-
+util_free((void*)&conffile);
 if (ret == 1)
 {
 	memset(key,0x0,sizeof(key));

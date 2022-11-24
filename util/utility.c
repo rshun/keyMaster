@@ -295,8 +295,9 @@ char* util_put2Value(char* _s,char** _d)
 {
 size_t len = util_strlen(_s)+1;
 
+*_d = NULL;
 if (len == 1)
-	return NULL;
+  return NULL;
 
 if ((*_d = (char*)malloc(len)) == NULL)
 {
@@ -306,7 +307,7 @@ if ((*_d = (char*)malloc(len)) == NULL)
 
 memset(*_d,0x0,len);
 strncpy(*_d,_s,len-1);
-	
+
 return *_d;
 }
 
@@ -362,7 +363,7 @@ uChar* util_str2hex(const char* s,uChar* result,size_t len)
 unsigned char *p = result;
 
 for (int i=0;i<strlen(s);i++)
-    snprintf(&result[i*2],len, "%02x", (uInt)s[i]);
+    snprintf((char*)&result[i*2],len, "%02x", (uInt)s[i]);
 
 return p;
 }
