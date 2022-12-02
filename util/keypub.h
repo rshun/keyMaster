@@ -7,7 +7,7 @@
 #include "list.h"
 
 #ifndef DEFAULT_PWDLEN
-#define DEFAULT_PWDLEN "6211"
+#define DEFAULT_PWDLEN "811"
 #endif 
 
 #ifndef uInt

@@ -257,6 +257,9 @@ char label[20];
 memset(label,0x0,sizeof(label));
 switch (type[0])
 {
+	case 's':case 'S':
+		snprintf(label,sizeof(label),"userID");
+		break;
 	case 'u':case 'U':
 		snprintf(label,sizeof(label),"updateTime");
 		break;
@@ -370,7 +373,7 @@ static void _printhelp(const char* s)
 	fprintf(stderr,"    -c [user.json路径],默认当前路径\n");
     fprintf(stderr,"    -l [keyword] 显示用户配置\n");
     fprintf(stderr,"    -a [filename] 新增配置\n");	
-    fprintf(stderr,"    -u keyword [k-密码长度,u-密码次数,t-密钥类型,a-指定特殊字符,w-网站图标] [value] 更新指定配置\n");
+    fprintf(stderr,"    -u keyword [s-用户名,k-密码长度,u-密码次数,t-密钥类型,a-指定特殊字符,w-网站图标] [value] 更新指定配置\n");
 	fprintf(stderr,"    -d keyword 删除指定配置\n");
 	fprintf(stderr,"    -m 修改密码\n");
 	fprintf(stderr,"    -t 将配置文件改为[0-不加密,其余-加密]\n");
@@ -458,7 +461,7 @@ while( (ch=getopt_long(argc, argv, short_options, long_options, NULL)) != -1 )
 			snprintf(encflag,sizeof(encflag),"%s",optarg);
 			flag=ch;
 			subflag++;
-			break;			
+			break;
 		case 'r':
 			snprintf(username,sizeof(username),"%s",optarg);
 			mainflag++;

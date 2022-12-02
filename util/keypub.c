@@ -2,7 +2,7 @@
 #include "cJSON.h"
 #include "utility.h"
 
-const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","keyType","allowSpec","webIcon"};
+const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","keyType","allowSpec","webIcon","Memo"};
 
 /*
 功能: 读取文件内容并解密
@@ -595,6 +595,8 @@ FILE *fp;
 char buff[1024],name[1024],value[1024];
 int labelLen=sizeof(JSON_LABEL)/sizeof(JSON_LABEL[0]);
 int islabel[labelLen];
+char webicon[]="/favicon.ico";
+char* tmpValue=NULL;
 
 if ((fp = fopen(conffilename,"rb")) == NULL)
 {
@@ -627,6 +629,12 @@ while (!feof(fp))
 		if ((strncmp(name,JSON_LABEL[i],strlen(name)) == 0) && (strlen(value) > 0))
 		{
 			islabel[i]=1;
+			if ((i == 2) && (util_isdomain(value) == 1))
+			{
+				tmpValue=(char*)malloc(strlen(value)+strlen(webicon)+1);
+				memset(tmpValue,0x0,strlen(value)+strlen(webicon)+1);
+				snprintf(tmpValue,strlen(value)+strlen(webicon)+1,"%s%s",value,webicon);
+			}
 			cJSON_AddStringToObject(new, JSON_LABEL[i], value);
 		}
 	}
@@ -642,9 +650,19 @@ for(int i=0;i<labelLen;i++)
 			fprintf(stderr,"[%s] is must input\n",JSON_LABEL[i]);
 			return -1;
 		}
-		cJSON_AddStringToObject(new, JSON_LABEL[i], "");
+		else if (i == 4)	//添加keylen和updateTime默认值
+			cJSON_AddStringToObject(new, JSON_LABEL[i], "811");	
+		else if (i == 5)
+			cJSON_AddStringToObject(new, JSON_LABEL[i], "1");
+		else if (i == 8)
+			cJSON_AddStringToObject(new, JSON_LABEL[i], tmpValue);
+		else if (i == 9)
+			cJSON_AddStringToObject(new, JSON_LABEL[i], "已生效");
+		else
+			cJSON_AddStringToObject(new, JSON_LABEL[i], "");
 	}
 }
+util_free((void*)&tmpValue);
 
 if (flag == 1)
 {

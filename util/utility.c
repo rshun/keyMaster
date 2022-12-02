@@ -605,3 +605,41 @@ snprintf(plaintxt,plainlen,"%s",ciphertxt);
 util_free((void*)&pad_Key);
 return actualLength;
 }
+
+/* 
+功能: 判断网址是数字还是域名
+返回: 1--域名,0-数字,-1-其他
+*/
+int util_isdomain(char* s)
+{
+char HTTP_HEAD[]="http://";
+char HTTPS_HEAD[]="https://";
+char newstr[strlen(s)];
+int len;
+char *p = NULL;
+
+if (strlen(s) == 0) return -1;
+
+if (( p =strstr(s,HTTP_HEAD)) != NULL)
+    p = s+strlen(HTTP_HEAD);
+else if (( p =strstr(s,HTTPS_HEAD)) != NULL)
+    p = s+strlen(HTTPS_HEAD);
+else
+    p = s;
+
+len = strlen(p);
+memset(newstr,0x0,sizeof(newstr));
+if (p != NULL)
+{
+  for(int i=0,j=0;i<len;i++)
+  {
+    if (isalnum(*(p+i)) != 0)
+      newstr[j++]=*(p+i);
+  }
+}
+
+if (util_isdigitstr(newstr) == 0)
+  return 0;
+else
+  return 1;
+}
