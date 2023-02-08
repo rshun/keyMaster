@@ -66,7 +66,7 @@ char newfile[255];
 
 if ((ciphertext = (char*)malloc(cipherlen)) == NULL)
 {
-	fprintf(stderr,"ciphertxt malloc error,%d,[%s]\n",cipherlen,strerror(errno));
+	fprintf(stderr,"ciphertxt malloc error,%zd,[%s]\n",cipherlen,strerror(errno));
 	return -1;
 }
 
@@ -554,7 +554,7 @@ if ((flag == 'a') && (isencflag != 0))
 	{
 		if ((filename = (char*)malloc(strlen(username)+6)) == NULL)
 		{
-			fprintf(stderr,"filename malloc is error,%d,[%s]\n",strlen(username)+6,strerror(errno));
+			fprintf(stderr,"filename malloc is error,%zd,[%s]\n",strlen(username)+6,strerror(errno));
 			util_free((void*)&configfile);
 			exit(EXIT_FAILURE);
 		}
@@ -620,7 +620,7 @@ if (flag == 't')
 
 if (isencflag != 1)
 {
-	fprintf(stderr,"user.json不存在,或%s.json不加密\n",username,username);
+	fprintf(stderr,"user.json不存在,或%s.json不加密\n",username);
 	util_free((void*)&filename);
 	util_free((void*)&configfile);
 	exit(EXIT_FAILURE);
