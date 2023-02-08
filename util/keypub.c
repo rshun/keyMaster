@@ -5,6 +5,49 @@
 const char* JSON_LABEL[]={"cnName","enName","webAddr","userID","keyLen","updateTime","keyType","allowSpec","webIcon","Memo"};
 
 /*
+功能: 随机生成用户名
+参数1: 种子
+参数2: 添加到json
+*/
+static int _makeRandomUserID(const char* seed,char* newuser,size_t len)
+{
+char tmpvalue[strlen(seed)+20];
+char newvalue[200];
+char value[10+1];
+int flag=0;
+time_t n;
+
+time(&n);
+
+memset(tmpvalue,0x0,sizeof(tmpvalue));
+memset(newvalue,0x0,sizeof(newvalue));
+memset(value,0x0,sizeof(value));
+
+snprintf(tmpvalue,sizeof(tmpvalue),"%s%ld",seed,n);
+util_sha512(tmpvalue,newvalue,sizeof(newvalue));
+value[0] = util_galpha(util_sumchar(newvalue) + util_gdigit(newvalue));
+
+for(int i=1;i<10;i++)
+{
+	if (!flag)
+	{
+		value[i] = newvalue[i];
+		if (isdigit(value[i])) flag = 1;
+	}
+	else
+	{
+		value[i] = util_galpha(util_sumchar(newvalue) + util_gdigit(newvalue));
+	}
+	newvalue[strlen(newvalue)-1] = '\0';
+}
+
+snprintf(newuser,len,"%s",value);
+//cJSON_AddStringToObject(new, "userID", value);
+
+return 0;
+}
+
+/*
 功能: 读取文件内容并解密
 参数1: 密文文件
 参数2: 向量
@@ -472,6 +515,7 @@ int count=0,match=-1;
 NodePtr current = keylist->head;
 keyinfoPtr ptrJson;
 char cUpdatetime[5+1];
+char newUserid[10+1];
 
 while (current != NULL)
 {
@@ -507,6 +551,13 @@ if (strncmp(type,"updateTime",strlen("updateTime")) == 0)
 
 	cJSON_ReplaceItemInObject(cJSON_GetArrayItem(root,match),"updateTime",cJSON_CreateString(cUpdatetime));
 }
+else if (strncmp(type,"isRandomUserID",strlen("isRandomUserID")) == 0)
+{
+	memset(newUserid,0x0,sizeof(newUserid));
+	value = cJSON_GetObjectItem(cJSON_GetArrayItem(root,match),"enName");
+	_makeRandomUserID((char*)value,newUserid,sizeof(newUserid));
+	cJSON_ReplaceItemInObject(cJSON_GetArrayItem(root,match),"userID",cJSON_CreateString(newUserid));
+}
 else
 {
 	if (cJSON_GetObjectItem(cJSON_GetArrayItem(root,match),type) != NULL)
@@ -523,7 +574,7 @@ return 0;
 
 /*
 功能: 在user.json新增用户及相关信息
-参数1: 标志（-2，新增user.json文件，并新增用户,-1新增用户
+参数1: 标志 (-2，新增user.json文件，并新增用户,-1新增用户)
 参数2: 用户名
 参数3: 用户配置文件 (带路径)
 参数4: 用户文件名
@@ -593,10 +644,11 @@ int addnewconf(const char* conffilename,char* filebuf,size_t filelen,int flag)
 cJSON *root,*new;
 FILE *fp;
 char buff[1024],name[1024],value[1024];
-int labelLen=sizeof(JSON_LABEL)/sizeof(JSON_LABEL[0]);
-int islabel[labelLen];
 char webicon[]="/favicon.ico";
 char* tmpValue=NULL;
+char* seed=NULL;
+int random=1;
+char newUser[10+1];
 
 if ((fp = fopen(conffilename,"rb")) == NULL)
 {
@@ -605,7 +657,6 @@ if ((fp = fopen(conffilename,"rb")) == NULL)
 }
 
 new = cJSON_CreateObject();
-memset(&islabel,0,sizeof(islabel));
 
 while (!feof(fp))
 {
@@ -616,53 +667,83 @@ while (!feof(fp))
 		buff[strcspn(buff,"#")] = '\0';
 
 	util_trim(buff);
-	if (strlen(buff) == 0) continue;
+	if (strlen(buff) < 2) continue;
 
 	memset(name,0x0,sizeof(name));
 	memset(value,0x0,sizeof(value));
 	util_splitbuff(buff,name,sizeof(name),value,sizeof(value));
 
-	util_trim(value);
-
-	for(int i=0;i<labelLen;i++)
+	util_trim(value); 
+	if (strncmp(name,JSON_LABEL[1],strlen(JSON_LABEL[1])) == 0)	
 	{
-		if ((strncmp(name,JSON_LABEL[i],strlen(name)) == 0) && (strlen(value) > 0))
+		if (strlen(value) == 0)
 		{
-			islabel[i]=1;
-			if ((i == 2) && (util_isdomain(value) == 1))
-			{
-				tmpValue=(char*)malloc(strlen(value)+strlen(webicon)+1);
-				memset(tmpValue,0x0,strlen(value)+strlen(webicon)+1);
-				snprintf(tmpValue,strlen(value)+strlen(webicon)+1,"%s%s",value,webicon);
-			}
-			cJSON_AddStringToObject(new, JSON_LABEL[i], value);
-		}
-	}
-}
-fclose(fp);
-
-for(int i=0;i<labelLen;i++)
-{
-	if (islabel[i] == 0)
-	{
-		if (i>=1 && i<=2)
-		{
-			fprintf(stderr,"[%s] is must input\n",JSON_LABEL[i]);
+			fprintf(stderr,"[%s] is must input\n",JSON_LABEL[1]);
+			fclose(fp);
 			return -1;
 		}
-		else if (i == 4)	//添加keylen和updateTime默认值
-			cJSON_AddStringToObject(new, JSON_LABEL[i], "811");	
-		else if (i == 5)
-			cJSON_AddStringToObject(new, JSON_LABEL[i], "1");
-		else if (i == 8)
-			cJSON_AddStringToObject(new, JSON_LABEL[i], tmpValue);
-		else if (i == 9)
-			cJSON_AddStringToObject(new, JSON_LABEL[i], "已生效");
-		else
-			cJSON_AddStringToObject(new, JSON_LABEL[i], "");
+		seed=(char*)malloc(strlen(value)+1);
+		memset(seed,0x0,strlen(value)+1);
+		snprintf(seed,strlen(seed)+1,"%s",value);
 	}
+	else if (strncmp(name,JSON_LABEL[2],strlen(JSON_LABEL[2])) == 0)	
+	{
+		if (strlen(value) == 0)
+		{
+			fprintf(stderr,"[%s] is must input\n",JSON_LABEL[2]);
+			fclose(fp);
+			return -1;
+		}
+		if (util_isdomain(value) == 1)
+		{
+			tmpValue=(char*)malloc(strlen(value)+strlen(webicon)+1);
+			memset(tmpValue,0x0,strlen(value)+strlen(webicon)+1);
+			snprintf(tmpValue,strlen(value)+strlen(webicon)+1,"%s%s",value,webicon);
+		}
+	}
+	else if ((strncmp(name,JSON_LABEL[4],strlen(JSON_LABEL[4])) == 0) && (strlen(value) == 0))
+	{
+		snprintf(value,sizeof(value),DEFAULT_PWDLEN);
+	}
+	else if ((strncmp(name,JSON_LABEL[5],strlen(JSON_LABEL[5])) == 0) && (strlen(value) == 0))
+	{
+		value[0] = '1';
+	}
+	else if ((strncmp(name,JSON_LABEL[6],strlen(JSON_LABEL[6])) == 0) && (strlen(value) == 0))
+	{
+		value[0] = '1';
+	}	
+	else if ( (strncmp(name,JSON_LABEL[9],strlen(JSON_LABEL[9])) == 0) && (strlen(value) == 0))
+	{
+		snprintf(value,sizeof(value),"已生效");
+	}
+	else if  ( (strstr(buff,"isRandomUserID=") != NULL) && (value[0] == '1') ) 
+	{
+		 /* userID随机生成 */
+		memset(newUser,0x0,sizeof(newUser));
+		random = _makeRandomUserID(seed,newUser,sizeof(newUser));
+		cJSON_AddStringToObject(new, "userID", newUser);
+		continue;
+	}
+	else if (strncmp(name,JSON_LABEL[3],strlen(JSON_LABEL[3])) == 0) 
+	{
+		if (random)
+			cJSON_AddStringToObject(new, name, value);
+		continue;
+	}
+	else
+	{
+		if ((strncmp(name,JSON_LABEL[8],strlen(JSON_LABEL[8])) == 0) ||  (strstr(buff,"isRandomUserID=") != NULL))
+			continue;
+	}
+	cJSON_AddStringToObject(new, name, value);
 }
-util_free((void*)&tmpValue);
+fclose(fp);
+if (tmpValue != NULL)
+{
+	cJSON_AddStringToObject(new, JSON_LABEL[8], tmpValue);
+	util_free((void*)&tmpValue);
+}
 
 if (flag == 1)
 {

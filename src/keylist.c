@@ -39,6 +39,12 @@ if (value->allowSpec != NULL)
 else
 	fprintf(stderr,"允许指定特殊字符:\n");
 
+if (value->webIcon != NULL)
+	fprintf(stderr,"网站图标地址:%s\n",value->webIcon);
+else
+	fprintf(stderr,"网站图标地址:\n");
+
+
 //fprintf(stderr,"位置:%d\n",value->which);
 fprintf(stderr,"-----------------------------------------------\n");
 }
@@ -260,6 +266,9 @@ switch (type[0])
 	case 's':case 'S':
 		snprintf(label,sizeof(label),"userID");
 		break;
+	case 'r':case 'R':
+		snprintf(label,sizeof(label),"isRandomUserID");
+		break;
 	case 'u':case 'U':
 		snprintf(label,sizeof(label),"updateTime");
 		break;
@@ -368,12 +377,12 @@ return 0;
 
 static void _printhelp(const char* s)
 {
-    fprintf(stderr,"\nusage: %s -r username [-p user.json路径] [-l keyword] [-u keyword] [-g filename] [-a filename] [-d keyword] [-m] [-t 0,1]\n",s);
+    fprintf(stderr,"\nusage: %s -r username [-c user.json路径] [-l keyword] [-u keyword] [-g filename] [-a filename] [-d keyword] [-m] [-t 0,1]\n",s);
     fprintf(stderr,"    -r <username> 用户名\n");
 	fprintf(stderr,"    -c [user.json路径],默认当前路径\n");
     fprintf(stderr,"    -l [keyword] 显示用户配置\n");
     fprintf(stderr,"    -a [filename] 新增配置\n");	
-    fprintf(stderr,"    -u keyword [s-用户名,k-密码长度,u-密码次数,t-密钥类型,a-指定特殊字符,w-网站图标] [value] 更新指定配置\n");
+    fprintf(stderr,"    -u keyword [s-用户名,k-密码长度,u-密码次数,t-密钥类型,a-指定特殊字符,w-网站图标,r-随机生成userID] [value] 更新指定配置\n");
 	fprintf(stderr,"    -d keyword 删除指定配置\n");
 	fprintf(stderr,"    -m 修改密码\n");
 	fprintf(stderr,"    -t 将配置文件改为[0-不加密,其余-加密]\n");
@@ -397,16 +406,19 @@ if ((fp = fopen(filename,"wb")) == NULL)
 fprintf(fp,"#中文名称\ncnName=\n\n");
 fprintf(fp,"#英文名称(必输)\nenName=\n\n");
 fprintf(fp,"#网址(必输)\nwebAddr=\n\n");
+fprintf(fp,"#用户名随机生成(如果为1,表示用户名随机生成,其余用户输入,用户名只包括字母和数字且全小写,长度不超过10,该值为1的时候,忽略userID)\nisRandomUserID=\n\n");
 fprintf(fp,"#用户名\nuserID=\n\n");
-fprintf(fp,"#密码长度\n");
-fprintf(fp,"# 长度为3 第1位是字母 第2位是数字 第3位是特殊字符 \n");
-fprintf(fp,"# 长度为4 前2位是字母 第3位是数字 第4位是特殊字符\n");
+fprintf(fp,"#密码长度,默认811\n");
+fprintf(fp,"# 长度为3 第1位是字母位数 第2位是数字位数 第3位是特殊字符位数 \n");
+fprintf(fp,"# 长度为4 前2位是字母位数 第3位是数字位数 第4位是特殊字符位数\n");
 fprintf(fp,"# 密码长度必须大于6,且必须包含字母或数字\n");
 fprintf(fp,"# 大写字母占大于20%%\n");
+fprintf(fp,"# 例如: 811--表示8位字母,其中大写字母2位,1位数字,1位特殊字符,一共10位\n");
+fprintf(fp,"# 例如: 1011--表示10位字母,其中大写字母3位,1位数字,1位特殊字符,密码长度一共12位\n");
 fprintf(fp,"keyLen=\n\n");
-fprintf(fp,"#更新次数\nupdateTime=\n\n");
-fprintf(fp,"#密钥类型 适用于一个网站多个密码\nkeyType=\n\n");
-fprintf(fp,"#只允许指定特殊字符\nallowSpec=\n\n");
+fprintf(fp,"#更新次数,如果需要更新密码,可以修改此参数重新生成新密码\nupdateTime=\n\n");
+fprintf(fp,"#密钥类型,默认是1,如果有相同网站,但密码不同,可以在此修改为2 适用于一个网站多个密码\nkeyType=\n\n");
+fprintf(fp,"#只允许指定特殊字符,例如:!#$^*,表示特殊字符只允许这五个\nallowSpec=\n\n");
 fprintf(fp,"#网站图标\nwebIcon=\n\n");
 
 fclose(fp);
@@ -467,6 +479,7 @@ while( (ch=getopt_long(argc, argv, short_options, long_options, NULL)) != -1 )
 			mainflag++;
 			break;
 		case 'm':
+			flag=ch;
 			subflag++;
 			break;
 		case 'c':
