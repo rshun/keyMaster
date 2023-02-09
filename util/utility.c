@@ -3,6 +3,13 @@
 #include "aes.h"
 #include "base64.h"
 
+void clearscreen()
+{
+for(int i=0;i<100;i++)
+  fprintf(stdout,"\n");
+
+}
+
 void util_splitbuff(const char* buff,char* index,size_t index_len,char* value,size_t value_len)
 {
 char* p=NULL;

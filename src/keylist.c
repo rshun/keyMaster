@@ -597,13 +597,14 @@ if (flag == 't')
 	{
 		printf("input %s new password:",username);
 		scanf("%s",password);
-
+        clearscreen();
 		plain2cipher(filename,username,password,configfile);
 	}
 	else if ((encflag[0] == '0') && (isencflag == 1))
 	{
 		printf("input %s password:",username);
 		scanf("%s",password);
+		clearscreen();
 		cipher2plain(filename,username,password,configfile);
 	}
 	else
@@ -629,6 +630,7 @@ if (isencflag != 1)
 
 printf("input %s password:",username);
 scanf("%s",password);
+clearscreen();
 
 if ((ret = decode_encfile(filename,username,password,&plaintxt)) < 0)
 {
@@ -659,6 +661,7 @@ switch(flag)
 		memset(newkey,0x0,sizeof(newkey));
 		printf("input new password:");
 		scanf("%s",newkey);
+		clearscreen();
 		write_encryfile(username,newkey,plaintxt,filename);
 		break;
 }

@@ -46,6 +46,7 @@ uChar* util_str2hex(const char* ,uChar* result,size_t );
 char* util_trim(char* );
 void util_splitbuff(const char* ,char* ,size_t ,char* ,size_t );
 int util_isdomain(char* );
+void clearscreen();
 
 size_t pkcs7_padding_data_length( uint8_t * , size_t , uint8_t  );
 int pkcs7_padding_valid( uint8_t *, size_t , size_t , uint8_t  );

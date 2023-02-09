@@ -145,6 +145,7 @@ for(i=0;i<num;i++)
 				sprintf(code,"%s%s%s%s%s",addr,primary,ptrJson->userID,ptrJson->updateTime,ptrJson->keyType);
 
 			codeutil_password(code,ptrJson->keyLen,ptrJson->allowSpec,password,len);
+			clearscreen();
 			printf("[%s]\t[%s]\tuser=[ %s ]\tpassword=[ %s ]\n",ptrJson->enName,ptrJson->cnName,ptrJson->userID,password);
 			
 			util_free((void*)&password);
